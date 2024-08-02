@@ -3,7 +3,7 @@ var ListViewCtrl = cc.Class({
     extends: cc.Component,
 
     properties: {
-        itemTemplate: cc.Prefab,
+        itemTemplate: cc.Node,
         scrollView:cc.ScrollView,
         spawnCount: 0,
         spacing:0,
