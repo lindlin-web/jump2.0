@@ -6,7 +6,7 @@ var HeroCtrl = cc.Class({
     properties: {
        collider:HeroCollider,
        heroScore:cc.Node,
-       preBall:cc.Prefab,
+       preBall:cc.Node,
        tail:cc.Node,
        light:cc.Node,                  // 英雄身上的光圈......
     },

@@ -6,10 +6,12 @@ cc.Class({
     extends: require('BaseView'),
 
     properties: {
+
+        
         precent: cc.Label,
         theBox: cc.Node,
         hero: cc.Node,
-        preBall:cc.Prefab,
+        preBall:cc.Node,
         ballGroup:cc.Node,
         olderNode:cc.Node,              // 老手的节点
         newerNode:cc.Node,              // 新手的节点
@@ -36,6 +38,9 @@ cc.Class({
 
     onLoad() {
         // 把这几个proxy 都设置一下..
+
+        this.wigDoneCount = 0;
+        this.sceneDone = false;
         GameData.reset();
         for (var key in GameData) {
             GameData[key];
@@ -44,23 +49,22 @@ cc.Class({
         window.MyInstance = this;
 
         this.theTempIndex = 0;
+        this.precent.string = 0 + "%";
         this.nodePool = new cc.NodePool();
         this.BigStep = 0;
         this.BigPercent = [0 ,40, 70,100];         // 第一个是网络， 第二个是prefab, 第三个是音效.
-        this.smallStep = -1;    
-        var netThing = [this.login,this.clubRank,this.coinRank, this.tasks];                // this.tasks, this.historyRank,this.friend, this.clubRank, this.coinRank
-        var prefabThing = ["ui/jpzmg/bottom","ui/jpzmg/clubPage","ui/jpzmg/rankPage","ui/jpzmg/walletsPage","ui/jpzmg/BoostsPage","ui/jpzmg/friendsPage","ui/jpzmg/resultPage","ui/jpzmg/squadPage"
-                                                            , "ui/jpzmg/tasksPage", "ui/jpzmg/rankRewardClub", "ui/jpzmg/rankRewardTip","ui/jpzmg/finishToturialTip"];
-        var musicThing = ["sound/fail","sound/jump_loop","sound/jump_start","sound/score_1","sound/score_more","sound/button","sound/levelup"];
+        this.smallStep = -1;
+        var netThing = [this.login];
 
         this.olderNode.active = true;
         this.newerNode.active = false;
-        this.theResources = [netThing, prefabThing, musicThing];
+        this.theResources = [netThing];
         this.onNext();
         telegramUtil.onSetBgColor(HEAD_COLORS.LOADING);
         telegramUtil.onSetHeaderColor(HEAD_COLORS.LOADING);
 
-        
+        this.SceneValue = Math.floor(Math.random() * 8) + 4;
+        this.PerValue = Math.floor(100 - this.SceneValue) / 11;
     },
 
     onLoginFinished() {
@@ -183,6 +187,7 @@ cc.Class({
     onNext() {
         this.smallStep++;
         let thing = this.theResources[this.BigStep];
+        var self = this;
         if(this.smallStep < thing.length) {
             this.doNext();
         } else {
@@ -191,12 +196,10 @@ cc.Class({
             if(this.BigStep < this.theResources.length) {
                 this.doNext();
             } else {
-                this.theTempIndex = 100;
                 cc.director.preloadScene("JJUIMain", function(completedCount, totalCount, item) {
 
                 }, function() {
-                    
-                    this.doTheJump();
+                    self.shouldStartJump(false);
                 }.bind(this));
             }
         }
@@ -244,7 +247,6 @@ cc.Class({
         let thisStep = this.BigPercent[this.BigStep];
         let nextStep = this.BigPercent[this.BigStep + 1];
         let perStep = (nextStep - thisStep) / thing.length;
-        this.theTempIndex = thisStep + perStep * this.smallStep;
         let target = thing[this.smallStep];
         if(typeof target == 'function') {
             target();
@@ -260,8 +262,44 @@ cc.Class({
                 cc.error(err.message || err);
                 return;
             }
-            self.onNext();
+            self.shouldStartJump(true);
         });
+    },
+
+    /** 是否是wig，还是完成了scenethis.tasks();
+                    this.historyRank();
+                    this.friend();
+                    this.clubRank();
+                    this.coinRank();
+
+                    this.preloadResource("sound/fail");
+                    this.preloadResource("sound/jump_loop");
+                    this.preloadResource("sound/jump_start");
+                    this.preloadResource("sound/score_1");
+                    this.preloadResource("sound/score_more");
+                    this.preloadResource("sound/button");
+                    
+                    */
+    shouldStartJump(isWig) {
+        if(isWig) {
+            this.wigDoneCount += 1;
+        } else {
+            this.sceneDone = true;
+        }
+
+        
+        var plus = 0;
+        if(this.sceneDone) {
+            plus = this.SceneValue;
+        }
+        this.theTempIndex = this.wigDoneCount * this.PerValue + plus;
+        this.precent.string = parseInt(this.theTempIndex) + "%";
+        this.touchStart(this.theTempIndex/100, 30);
+
+        if(this.wigDoneCount >= 11 && this.sceneDone) {
+            this.precent.string = "100%";
+            this.doTheJump();
+        }
     },
 
 
@@ -378,11 +416,13 @@ cc.Class({
     },  
 
     update(dt) {
-        if(this.theTempIndex >= 100) {
-            this.theTempIndex = 100;
-        }
-        this.precent.string = parseInt(this.theTempIndex) + "%";
-        this.touchStart(this.theTempIndex/100, 30);
+        // if(this.theTempIndex >= 100) {
+        //     this.theTempIndex = 100;
+        // }
+        // this.precent.string = parseInt(this.theTempIndex) + "%";
+        // this.touchStart(this.theTempIndex/100, 30);
+
+
     },
 
     touchStart(deltaTime, boxHeight) {
@@ -422,25 +462,41 @@ cc.Class({
     handleNotification(key, data) {
         switch (key) {
             case gGSM.LOGIN:
+                {
+                    this.tasks();
+                    this.historyRank();
+                    this.friend();
+                    this.clubRank();
+                    this.coinRank();
+
+                    this.preloadResource("sound/fail");
+                    this.preloadResource("sound/jump_loop");
+                    this.preloadResource("sound/jump_start");
+                    this.preloadResource("sound/score_1");
+                    this.preloadResource("sound/score_more");
+                    this.preloadResource("sound/button");
+                    this.preloadResource("sound/levelup");
+
+                }
                 this.onNext();
                 break;
             case AppNotify.SHOW_FRIENDS:
-                this.onNext();
+                this.shouldStartJump(true);
                 break;
             case AppNotify.RankClub:
-                this.onNext();
+                this.shouldStartJump(true);
                 break;
             case AppNotify.RankToday:
-                this.onNext();
+                this.shouldStartJump(true);
                 break;
             case AppNotify.RankHistory:
-                this.onNext();
+                this.shouldStartJump(true);
                 break;
             case AppNotify.FETCH_TASKS:
-                this.onNext();
+                this.shouldStartJump(true);
                 break;
             case AppNotify.RankCoin:
-                this.onNext();
+                this.shouldStartJump(true);
                 break;   
 
         }

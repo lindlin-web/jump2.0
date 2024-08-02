@@ -59,6 +59,7 @@ cc.Class({
 
         theDrop:cc.Node,                // 雨滴...
 
+        theMainPanel:cc.Prefab,     // 所有的预制体都在一个地方....
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -119,6 +120,14 @@ cc.Class({
         GameData.UsersProxy.askForOffLineBenefit();         // 获得离线收益...
 
         this.createTheRain();
+
+        this.thePanelsNode = cc.instantiate(this.theMainPanel);
+    },
+
+
+    /** 所有的prefab的与之都在这个节点之中 */
+    getPanelsNode() {
+        return this.thePanelsNode;
     },
 
     onComboClick() {

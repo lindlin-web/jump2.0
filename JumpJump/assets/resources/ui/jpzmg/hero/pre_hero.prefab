@@ -401,7 +401,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 17.52,
+      "width": 0,
       "height": 37.8
     },
     "_anchorPoint": {
@@ -1247,9 +1247,7 @@
     "heroScore": {
       "__id__": 8
     },
-    "preBall": {
-      "__uuid__": "ba0d3c95-211c-46c1-a6da-beb677edbb7d"
-    },
+    "preBall": null,
     "tail": {
       "__id__": 2
     },

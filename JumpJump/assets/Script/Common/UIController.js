@@ -220,7 +220,7 @@ var gUICtrl = window.gUICtrl = {
                     gUIIDs.UI_FindRecover,
                 ]
                 if (notScale.indexOf(uiid) == -1) {
-                    prefab.data.scaleX = prefab.data.scaleY = 1
+                    prefab.scaleX = prefab.scaleY = 1
                 }
                 if (openedUIIDs.indexOf(uiid) != -1 && openUICallbackMap[uiid]) {
                     openUICallbackMap[uiid](uiid, uicfg, prefab, params, callback);
@@ -601,22 +601,50 @@ var gUICtrl = window.gUICtrl = {
         if (!noLoading) {
             this.showLoadingProgress(resurl);
         }
-        gFuncs.createPrefab(resurl, function(prefab, err) {
-            if (!noLoading) {
-                this.hideLoadingProgress(resurl);
-            }
-            if (prefab == null || prefab == undefined) {
-                if (callback != null && callback != undefined) {
-                    callback(null, err);
-                }
-                return;
-            }
-            prefabCache[resurl] = prefab
 
+        let mainHome = cc.director.getScene().getChildByName("Canvas").getComponent("ZMMainHome");
+        if(!mainHome) {
+            return;
+        }
+        let panels = mainHome.getPanelsNode();
+        console.log(panels, "===========panels");
+
+        let nameOfPrefab = resurl.substring(resurl.lastIndexOf("/")+1);
+
+        let prefab = panels.getChildByName(nameOfPrefab);
+
+        if (!noLoading) {
+            this.hideLoadingProgress(resurl);
+        }
+        if (prefab == null || prefab == undefined) {
             if (callback != null && callback != undefined) {
-                callback(prefab);
+                callback(null, err);
             }
-        }.bind(this));
+            return;
+        }
+        prefabCache[resurl] = prefab
+
+        if (callback != null && callback != undefined) {
+            callback(prefab);
+        }
+
+
+        // gFuncs.createPrefab(resurl, function(prefab, err) {
+        //     if (!noLoading) {
+        //         this.hideLoadingProgress(resurl);
+        //     }
+        //     if (prefab == null || prefab == undefined) {
+        //         if (callback != null && callback != undefined) {
+        //             callback(null, err);
+        //         }
+        //         return;
+        //     }
+        //     prefabCache[resurl] = prefab
+
+        //     if (callback != null && callback != undefined) {
+        //         callback(prefab);
+        //     }
+        // }.bind(this));
     },
 
     getUIByUIID(uiid) {

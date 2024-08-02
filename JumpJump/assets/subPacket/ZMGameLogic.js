@@ -1,17 +1,14 @@
 const Box = require('./box/Box');
 const HeroCtrl = require('./hero/HeroCtrl');
 let BOXTYPE = {NormalBox:1, BigBox:2, HugeBox:3, GiantBox:4};       // 箱子的类型
-
+const BOXLENGTH = 21;
 
 var ZMGameLogic =cc.Class({
     extends: require('BaseView'),
 
     properties: {
-        theBoxs:[cc.Prefab],           // 箱子的预制体集合
-        theHero:cc.Prefab,              // 英雄的预制体
+
         lightHouse:cc.Node,             // 灯塔
-        theLight:cc.Prefab,             // 就是预制件, 吸收的光源.
-        theTreasure:cc.Prefab,        // 宝箱预制件的集合
         theScore:cc.Label,              // 分值的东西是什么....
 
         plusAdd:cc.Label,              // 跳跃的额外加成是什么....
@@ -25,6 +22,7 @@ var ZMGameLogic =cc.Class({
     onLoad () {
         this.isOnLoaded = true;
         //this.originalX = this.theScore.node.x;
+        
         this.originalMoneyX = this.moneyPanel.x;
         this.originalScoreX = this.theScore.node.parent.x;
         this.theScore.node.active = false;
@@ -64,6 +62,15 @@ var ZMGameLogic =cc.Class({
     
 
     start() {
+        
+        let mainHome = cc.director.getScene().getChildByName("Canvas").getComponent("ZMMainHome");
+        if(!mainHome) {
+            return;
+        }
+        let panels = mainHome.getPanelsNode();
+        console.log(panels, "===========panels");
+        this.boxesNode = panels;
+
         let isNewer = GameData.UsersProxy.getMyIsNewer();
         if(!isNewer) {
             this.runTheGame();
@@ -89,7 +96,7 @@ var ZMGameLogic =cc.Class({
         this.createBoxInPosition(cc.v2(169, -44));
 
         // create hero
-        this.heroComponent = cc.instantiate(this.theHero).getComponent(HeroCtrl);
+        this.heroComponent = cc.instantiate(this.boxesNode.getChildByName("pre_hero")).getComponent(HeroCtrl);
         this.heroComponent.initHero(this.node, this.boxArr[0].getJumpPosition());
 
         // 移动一下屏幕，根据箱子和参考点
@@ -321,9 +328,13 @@ var ZMGameLogic =cc.Class({
     /** 用一个预制体生成一个箱子 */
     createBoxInPosition(newPosition) {
         GameData.GameProxy.createNumBox(1);
-        let randomIndex = Math.floor(Math.random() * this.theBoxs.length);
-        let boxPrefab = this.theBoxs[randomIndex];
-        let boxNode = cc.instantiate(boxPrefab);
+        let randomIndex = Math.floor(Math.random() * BOXLENGTH);
+        if(randomIndex == 0) {
+            randomIndex = 1;
+        }
+        //let boxPrefab = this.theBoxs[randomIndex];
+        let boxNode = cc.instantiate(this.boxesNode.getChildByName("pre_box_" +randomIndex));//cc.instantiate(boxPrefab);
+        
         let boxCom = boxNode.getComponent(Box);
         let index = GameData.GameProxy.getBoxCreated();
         boxCom.random_box(this.node, newPosition,index);
@@ -341,7 +352,7 @@ var ZMGameLogic =cc.Class({
     createTreasuresBox(box, index) {
         let data = GameData.GameProxy.checkIsMoneyBox(index);
         if(data) {
-            let treatureBox = cc.instantiate(this.theTreasure);
+            let treatureBox = cc.instantiate(this.boxesNode.getChildByName("treasureBox"));
             let treatureCom = treatureBox.getComponent("Treasure");
             treatureBox.parent = box;
             treatureCom.setMoney(data);
