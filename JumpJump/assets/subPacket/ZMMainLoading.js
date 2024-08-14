@@ -12,6 +12,8 @@ cc.Class({
         precent: cc.Label,
         theBox: cc.Node,
         hero: cc.Node,
+        theHead:cc.Node,
+        realHero:cc.Node,
         preBall:cc.Node,
         ballGroup:cc.Node,
         olderNode:cc.Node,              // 老手的节点
@@ -72,6 +74,8 @@ cc.Class({
         this.PerValue = Math.floor(100 - this.SceneValue) / 11;
 
         this.canJump = true;
+
+        this.realHero.active = false;               //
     },
 
     onLoginFinished() {
@@ -243,9 +247,12 @@ cc.Class({
     },
 
     doTheJump() {
+        this.theHead.active = false;
+        this.hero.active = false;
+        this.realHero.active = true;
         this.ballGroup.active = false;
        let jumpTo = cc.jumpTo(0.4,550,300, 200, 1);
-       cc.tween(this.hero).to(0.4, {angle:-180}).delay(0.2).call(()=>{
+       cc.tween(this.realHero).to(0.4, {angle:-180}).delay(0.2).call(()=>{
             let isNewer = GameData.UsersProxy.getMyNeedTutorial();
             if(isNewer) {
                 this.doToturialInit();
@@ -258,7 +265,7 @@ cc.Class({
             }
             
         }).start();
-       this.hero.runAction(jumpTo)
+       this.realHero.runAction(jumpTo)
     },
 
     doNext() {
@@ -465,6 +472,7 @@ cc.Class({
         //限制最大压缩比例
         if(this.hero.scaleY>0.8){
             let pos = this.hero.getPosition();
+            this.theHead.setPosition(cc.v2(pos.x,pos.y+183-deltaTime/5*boxHeight));
             //this.hero.setPosition(cc.v2(pos.x,pos.y-deltaTime/8*boxHeight));
          }
 

@@ -30,7 +30,7 @@ let LOCAL_PLATFORM = {
 	payManiAddress:"https://leaphop.jiuba.icu/tonconnect-manifest.df297.json"
 }
 
-var finalSetting = TEST_PLATFORM;							/////xxxxxxxxxxxxxxxxxxxxxxxxxx 在这个地方进行配置...
+var finalSetting = REAL_PLATFORM;							/////xxxxxxxxxxxxxxxxxxxxxxxxxx 在这个地方进行配置...
 var GameConfig = window.GameConfig = {
 	debugLevel: 3,
 	

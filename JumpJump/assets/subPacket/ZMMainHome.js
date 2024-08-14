@@ -304,6 +304,7 @@ cc.Class({
             this.schedule(this.autoPlay, 2, cc.macro.REPEAT_FOREVER, 2);
             //this.login();
             NotifyMgr.send(AppNotify.UserInfoChange);
+            this.checkGuide();
         }
         
     },
@@ -425,8 +426,7 @@ cc.Class({
     checkRankPrize() {
         //GameData.GameProxy.askForRankPrize();         // 因为没有了排行榜奖励了。所以这个地方，可以被屏蔽掉了。
         let walletStep = GameData.GameProxy.getWalletStep();
-        let isNewer = GameData.UsersProxy.getMyIsNewer();
-        if(isNewer && walletStep == WALLETSTEP.WALLETJUMP) {
+        if(walletStep == WALLETSTEP.WALLETSTART) {
             // 如果是新手，并且，新手引导到了 点击jump这个按钮.
             this.theStartHand.active = true;
         }
@@ -460,8 +460,7 @@ cc.Class({
         GameTool.sendPointToServer("start");
 
         let walletStep = GameData.GameProxy.getWalletStep();
-        let isNewer = GameData.UsersProxy.getMyIsNewer();
-        if(isNewer && walletStep == WALLETSTEP.WALLETJUMP) {
+        if(walletStep == WALLETSTEP.WALLETSTART && btn) {
             // 如果是新手，并且，新手引导到了 点击jump这个按钮.
             this.theStartHand.active = false;
             GameData.GameProxy.addWalletStep(); 
@@ -505,16 +504,26 @@ cc.Class({
         telegramUtil.onSetHeaderColor(HEAD_COLORS.INGAME);
     },
 
-    backToMainPage() {
+    checkGuide() {
         let walletStep = GameData.GameProxy.getWalletStep();
         if(walletStep == WALLETSTEP.INIT) {
             let isNewer = GameData.UsersProxy.getMyIsNewer();
             this.theGuide.active = false;
-            if(isNewer) {
+            if(true) {
                 this.theGuide.active = true;
                 this.getWalletPosition();
             }
         }
+        if(walletStep == WALLETSTEP.WALLETSTART) {
+            // 如果是新手，并且，新手引导到了 点击jump这个按钮.
+            this.theStartHand.active = true;
+        }
+    },
+
+    backToMainPage() {
+        this.checkGuide();
+
+
         this.homePage.active = true;
         this.checkToOpenGiftPanel();
         this.inGameNode.active = false;

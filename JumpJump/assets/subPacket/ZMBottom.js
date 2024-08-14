@@ -107,7 +107,7 @@ cc.Class({
 
         let walletStep = GameData.GameProxy.getWalletStep();
         let isNewer = GameData.UsersProxy.getMyIsNewer();
-        if(isNewer && walletStep == WALLETSTEP.WALLETTIP) {
+        if(walletStep == WALLETSTEP.WALLETJUMP) {
             GameData.GameProxy.addWalletStep();             // 增进一步...
         }
         let telegramUtil = require('../Script/Common/TelegramUtils');
@@ -126,7 +126,7 @@ cc.Class({
     onRankClick() {
         let walletStep = GameData.GameProxy.getWalletStep();
         let isNewer = GameData.UsersProxy.getMyIsNewer();
-        if(isNewer && walletStep == WALLETSTEP.INIT) {
+        if(walletStep == WALLETSTEP.INIT) {
             GameData.GameProxy.addWalletStep();
         }
 

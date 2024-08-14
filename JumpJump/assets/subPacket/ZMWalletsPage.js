@@ -40,15 +40,13 @@ var ZMWalletsPage = cc.Class({
 
         this.isAskingReturnYet = true;
 
-        let isNewer = GameData.UsersProxy.getMyIsNewer();
-        let walletStep = GameData.GameProxy.getWalletStep();
         this.theGuide.active = false;
         
         this.theGuide2.active = false;
-        if(isNewer && walletStep == WALLETSTEP.WALLETBTN) {
-            this.theGuide.active = true;
-        }
+        
         this.theGuide3.active = false;
+
+        this.checkGuide();          // 看看， 新手引导的部分内容...
     },
 
     
@@ -156,7 +154,8 @@ var ZMWalletsPage = cc.Class({
         this.theGuide.active = false;
         let walletStep = GameData.GameProxy.getWalletStep();
         let isNewer = GameData.UsersProxy.getMyIsNewer();
-        if(isNewer && walletStep == WALLETSTEP.WALLETBTN) {
+        
+        if(walletStep == WALLETSTEP.WALLETBTN) {
             GameData.GameProxy.addWalletStep();             // 增进一步...
             this.theGuide2.active = true;
         }
@@ -169,14 +168,24 @@ var ZMWalletsPage = cc.Class({
                 });
             }
         }
-        
+    },
+
+    checkGuide() {
+        let walletStep = GameData.GameProxy.getWalletStep();
+
+        if(walletStep == WALLETSTEP.WALLETBTN) {
+            this.theGuide.active = true;
+        }
+        if(walletStep == WALLETSTEP.WALLETCONNECT) {
+            this.theGuide2.active = true;
+        }
     },
 
     onGuide2Click() {
+        GameData.GameProxy.addWalletStep();
         this.theGuide2.active = false;
         let walletStep = GameData.GameProxy.getWalletStep();
-        let isNewer = GameData.UsersProxy.getMyIsNewer();
-        if(isNewer && walletStep == WALLETSTEP.WALLETCONNECT) {
+        if(walletStep == WALLETSTEP.WALLETTIP) {
             GameData.GameProxy.addWalletStep();             // 增进一步...
             this.theGuide3.active = true;
             this.adjustGuide3();

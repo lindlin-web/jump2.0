@@ -7,7 +7,7 @@ var GameState = { StateOfInit:1, StateOfJump:2,StateOfWatch:4, StateOfSuccess:8,
 window.GameState = GameState;
 
 
-var WALLETSTEP = {INIT:0, WALLETBTN:1, WALLETCONNECT:2, WALLETTIP:3, WALLETJUMP:4, WALLETSTART:5};
+var WALLETSTEP = {INIT:0, WALLETBTN:1, WALLETCONNECT:2, WALLETTIP:3, WALLETJUMP:4, WALLETSTART:5, WALLETOVER:6};
 window.WALLETSTEP = WALLETSTEP;
 // 新人的 宝箱的 信息...
 var NewTreasureInfos = [{baseType:TreasureBigType.TON,type:0,reward_num:2,box_level:2, newGuideStep:1}, 
@@ -62,17 +62,31 @@ var GameProxy = (function(){
         this.isThisRoundFetchTheTicket = false;         // 这个单局里面是否已经有了 复活券了。
 
 
-        this.walletGuideStep = 0;            // 钱包引导，到了第几步了。 1 . 点击钱包 ，  2 . 点击钱包的connect , 3. 点击 钱包 tip 知道了。  4.  点击jump ..  5. 点击 start jump 按钮
+        this.walletGuideStep = -1;            // 钱包引导，到了第几步了。 1 . 点击钱包 ，  2 . 点击钱包的connect , 3. 点击 钱包 tip 知道了。  4.  点击jump ..  5. 点击 start jump 按钮
     }
 
     GameProxy.prototype.addWalletStep = function() {
+        let userName = GameData.UsersProxy.getMyNickName();
         this.walletGuideStep++;
-
+        if( this.walletGuideStep != WALLETSTEP.WALLETBTN && 
+            this.walletGuideStep != WALLETSTEP.WALLETCONNECT && 
+            this.walletGuideStep != WALLETSTEP.WALLETTIP && 
+            this.walletGuideStep != WALLETSTEP.WALLETJUMP) {
+                cc.sys.localStorage.setItem("wallet_"+userName,this.walletGuideStep);
+            }
         GameTool.sendPointToServer("WALLET_" + this.walletGuideStep);
     }
 
     GameProxy.prototype.getWalletStep = function() {
-        return this.walletGuideStep;
+        let userName = GameData.UsersProxy.getMyNickName();
+        if(this.walletGuideStep >= 0) {
+            return this.walletGuideStep;
+        } else {
+            let walletGuideStep = cc.sys.localStorage.getItem("wallet_"+userName);
+            this.walletGuideStep = walletGuideStep ? parseInt(walletGuideStep) : 0;
+            return this.walletGuideStep;
+        }
+        
     }
 
     GameProxy.prototype.onStartTheGame = function() {
