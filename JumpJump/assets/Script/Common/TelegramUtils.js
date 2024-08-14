@@ -123,8 +123,6 @@ TelegramUtils.prototype.onChallenge = function(){
             
         }
         theUrl = `https://t.me/share/url?text=${replay}&url=${GameConfig.getRobotURL()}?startapp=rp_${tempGid}_${myTgId}`;
-
-        
     } else {
         theUrl = `https://t.me/share/url?text=${replay}&url=${GameConfig.getRobotURL()}?startapp=r_${myTgId}`;
     }

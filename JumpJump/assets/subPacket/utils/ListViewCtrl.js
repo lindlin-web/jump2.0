@@ -81,11 +81,13 @@ var ListViewCtrl = cc.Class({
         let length = this.theData.length;
         if(this.prefabHeight == 0) {
             let item = cc.instantiate(this.itemTemplate);
+            item.active = true;
             itemHeight = item.height;
             this.prefabHeight = itemHeight;
         }
         for(let i = 0; i < this.theData.length && i < this.spawnCount; i++) {
             let item = cc.instantiate(this.itemTemplate);
+            item.active = true;
             this.content.addChild(item);
             item.setPosition(0, -item.height * (0.5 + i) - this.spacing * (i + 1));
             item.getComponent(this.nameOfItem).setInfo(this.theData[i]);
@@ -98,6 +100,7 @@ var ListViewCtrl = cc.Class({
         this.content.height = (this.totalCount + 1) * (this.prefabHeight + this.spacing) + this.spacing;
         if(this.totalCount < this.spawnCount) {
             let item = cc.instantiate(this.itemTemplate);
+            item.active = true;
             item.setPosition(0, -item.height * (0.5) - this.spacing * (1));
             item.getComponent(this.nameOfItem).setInfo(this.theData[0]);
             let bottom = this.getItemAtBottom();

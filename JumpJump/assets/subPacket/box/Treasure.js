@@ -83,7 +83,10 @@ cc.Class({
 
         let step = this.newGuideStep;
         if(step) {
+            let myStep = step - 1;
+            let param = "Start_jump" + myStep;
             GameData.UsersProxy.askForServerUpdateStep(step);
+            GameTool.sendPointToServer(param);
         }
         if(bigType == TreasureBigType.PT) {
             if(secondType == TreasureSecondType.GOLD) {

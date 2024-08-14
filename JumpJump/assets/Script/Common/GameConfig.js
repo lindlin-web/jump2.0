@@ -8,15 +8,17 @@ let TEST_PLATFORM = {
 	robotUrl: "https://t.me/myNewJumpBot/newJumpJump",
 	server:"https://jump.wxtest.vip/api",//"https://ikvmoneysocial.buzz/api",
 	inviteUrl: "https://t.me/jumpdevbot?start=team",			// 这个是跟 组队有关的接口，需要问服务器要这个数据
-	payAddress:"",
+	payAddress:"https://leaphop.jiuba.icu",
+	payManiAddress:"https://leaphop.jiuba.icu/tonconnect-manifest.df297.json"
 }
-
+//https://t.me/LeapCoinBot
 // 这个是正式服的配置
 let REAL_PLATFORM = {
-	robotUrl:"https://t.me/LeapHop_bot/leaphop",
-	server: "https://api.leaphop.app/api",
-	inviteUrl: "https://t.me/LeapHop_bot?start=team",
-	payAddress:"",
+	robotUrl:"https://t.me/LeapCoinBot/leapcoin",
+	server: "https://api.leapcoin.cc/api",
+	inviteUrl: "https://t.me/LeapCoinBot?start=team",
+	payAddress:"https://webapp.leapcoin.cc",
+	payManiAddress:"https://webapp.leapcoin.cc/tonconnect-manifest.df297.json"
 }
 
 // 这个是本地的配置...
@@ -24,7 +26,8 @@ let LOCAL_PLATFORM = {
 	robotUrl: "t.me/aabbcc_test_bot/tiaotiao_test",
 	server:"http://192.168.5.11:8789/api",
 	inviteUrl: "https://t.me/cccccccscss_bot?start=team",
-	payAddress:"", 
+	payAddress:"https://leaphop.jiuba.icu",
+	payManiAddress:"https://leaphop.jiuba.icu/tonconnect-manifest.df297.json"
 }
 
 var finalSetting = TEST_PLATFORM;							/////xxxxxxxxxxxxxxxxxxxxxxxxxx 在这个地方进行配置...
@@ -86,8 +89,13 @@ GameConfig.getInviteRobotUrl = function() {
 	return finalSetting.inviteUrl;
 }
 
+
+
 GameConfig.getPayAddress = function() {
-	
+	return finalSetting.payAddress
+}
+GameConfig.getPayManiAddress = function() {
+	return finalSetting.payManiAddress;
 }
 
 var entryParams = GameTool.getEntryParams();

@@ -4,6 +4,7 @@ cc.Class({
 
     properties: {
         okBtn:cc.Button,
+        theBack:cc.Node,
     },
     statics: {
         instance:null,
@@ -28,5 +29,8 @@ cc.Class({
     start() {
     },
 
-    // update (dt) {},
+    update (dt) {
+        this.theBack.angle += 20 * dt;
+        this.theBack.angle %= 360;
+    },
 });

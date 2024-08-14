@@ -251,6 +251,14 @@ uiCfgs[uiids.UI_REVIVE_TIP] = {
     res: "ui/jpzmg/ReviveCoupon",
     js: "ReviveCoupon",
 },
+uiids.UI_WALLET_EXIT_TIP = getAutoIncreaseID();
+uiCfgs[uiids.UI_WALLET_EXIT_TIP] = {
+    order: UIOrder.Dialog,
+    res: "ui/jpzmg/walletExitTip",
+    js: "WalletExitTip",
+},
+
+
 
 
 window.gUIIDs = uiids;

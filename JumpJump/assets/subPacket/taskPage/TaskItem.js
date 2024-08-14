@@ -22,10 +22,22 @@ cc.Class({
 
     start() {
         this.seeTheAdv = false;
+        this.hasClicked = false;
     },
 
     /**  点击按钮之后   */
     onClickBtn() {
+        if(this.hasClicked) {
+            console.log("无法重复点击");
+            return;
+        }
+        if(!this.hasClicked) {
+            this.hasClicked = true;
+            var self = this;
+            this.scheduleOnce(function() {
+                self.hasClicked = false
+            }, 3);
+        }
         let id = this.info.getId();
         // let taskType = this.info.getType();
         // if(taskType === TASKTYPE.INVITE) {
@@ -54,7 +66,6 @@ cc.Class({
         GameData.TaskProxy.askForDoTask(id);
         if(pid) {
             this.btnTxt.string = "check";
-            
             let isCompleted = this.info.isCompleted();
             let hasJoin = this.info.getJoin();
             if(isCompleted == 0 && hasJoin) {

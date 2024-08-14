@@ -1,7 +1,7 @@
 const Box = require('./box/Box');
 const HeroCtrl = require('./hero/HeroCtrl');
 let BOXTYPE = {NormalBox:1, BigBox:2, HugeBox:3, GiantBox:4};       // 箱子的类型
-const BOXLENGTH = 21;
+const BOXLENGTH = 28;
 
 var ZMGameLogic =cc.Class({
     extends: require('BaseView'),
@@ -15,11 +15,13 @@ var ZMGameLogic =cc.Class({
 
         moneyPanel:cc.Node,             // 跟钱有关系的那个面板.
         moneyLabel:cc.Label,            // 钱的数量是多少的呢.
+
     },
 
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
+        this.tempDt = 0;
         this.isOnLoaded = true;
         //this.originalX = this.theScore.node.x;
         
@@ -68,7 +70,6 @@ var ZMGameLogic =cc.Class({
             return;
         }
         let panels = mainHome.getPanelsNode();
-        console.log(panels, "===========panels");
         this.boxesNode = panels;
 
         let isNewer = GameData.UsersProxy.getMyIsNewer();
@@ -96,7 +97,10 @@ var ZMGameLogic =cc.Class({
         this.createBoxInPosition(cc.v2(169, -44));
 
         // create hero
-        this.heroComponent = cc.instantiate(this.boxesNode.getChildByName("pre_hero")).getComponent(HeroCtrl);
+        let preNode = cc.instantiate(this.boxesNode.getChildByName("pre_hero"));
+        preNode.active = true;
+        this.heroComponent = preNode.getComponent(HeroCtrl);
+        
         this.heroComponent.initHero(this.node, this.boxArr[0].getJumpPosition());
 
         // 移动一下屏幕，根据箱子和参考点
@@ -106,6 +110,7 @@ var ZMGameLogic =cc.Class({
     /**  开始做开始机器的动作 */
     doTheHoldBreathAction() {
         let isCanJump = GameData.GameProxy.isCanJump();
+        console.log("是否可以跳跃的呢", isCanJump);
         if(isCanJump){
             GameData.SoundProxy.playHoldBreath();
             this.isUpdateStart = true;
@@ -165,7 +170,7 @@ var ZMGameLogic =cc.Class({
                                         gUICtrl.openUI(gUIIDs.UI_RESULT_PAGE);
                                     }
                                     
-                                });
+                                },colliderNode);
                                 score = 0;
                                 break;
                             case 0: 
@@ -332,9 +337,22 @@ var ZMGameLogic =cc.Class({
         if(randomIndex == 0) {
             randomIndex = 1;
         }
+
+    
+        if(!this.boxesNode) {
+            let mainHome = cc.director.getScene().getChildByName("Canvas").getComponent("ZMMainHome");
+            if(!mainHome) {
+                console.error(" 场景没有初始化好");
+                return;
+            }
+            let panels = mainHome.getPanelsNode();
+            console.log(panels, "===========panels");
+            this.boxesNode = panels;
+        }
+        
         //let boxPrefab = this.theBoxs[randomIndex];
         let boxNode = cc.instantiate(this.boxesNode.getChildByName("pre_box_" +randomIndex));//cc.instantiate(boxPrefab);
-        
+        boxNode.active = true;
         let boxCom = boxNode.getComponent(Box);
         let index = GameData.GameProxy.getBoxCreated();
         boxCom.random_box(this.node, newPosition,index);
@@ -353,6 +371,7 @@ var ZMGameLogic =cc.Class({
         let data = GameData.GameProxy.checkIsMoneyBox(index);
         if(data) {
             let treatureBox = cc.instantiate(this.boxesNode.getChildByName("treasureBox"));
+            treatureBox.active = true;
             let treatureCom = treatureBox.getComponent("Treasure");
             treatureBox.parent = box;
             treatureCom.setMoney(data);

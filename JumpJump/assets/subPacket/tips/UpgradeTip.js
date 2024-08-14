@@ -33,6 +33,8 @@ var UpgradeTip = cc.Class({
         this._super();
         this.setUIID(gUIIDs.UPGRADE_TIP);
         this.setClickEvent(this.closeBtn, this.onBtnEscClick.bind(this));
+
+        this.setClickEvent(this.upgradeBtn, this.onUpgrade.bind(this),false, false,true, 2.5);
         this.type = this.getParams()["type"];
         this.level = this.getParams()["level"];
 

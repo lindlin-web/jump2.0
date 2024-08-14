@@ -2,6 +2,7 @@ let telegramUtil = require('../Script/Common/TelegramUtils');
 telegramUtil.registerExpandBehavior();
 telegramUtil.registerCloseBehavior();
 let ToturialState = {ToturialInit:0, ToturialHold:1, ToturialInterupt:2,ToturialRelease:3};            // 0 指导按住， 1 指导释放， 2 指导 点击屏幕
+GameTool.sendPointToServer("Entry_game",true);
 cc.Class({
     extends: require('BaseView'),
 
@@ -37,8 +38,10 @@ cc.Class({
     },
 
     onLoad() {
-        // 把这几个proxy 都设置一下..
 
+        GameTool.sendPointToServer("Entry_loading",true);
+        // 把这几个proxy 都设置一下..
+        this.hasEnter = false;          // 是否已经进入了。
         this.wigDoneCount = 0;
         this.sceneDone = false;
         GameData.reset();
@@ -81,6 +84,7 @@ cc.Class({
     },
 
     doToturialInit() {
+        GameTool.sendPointToServer("Guide_entry");
         this.olderNode.active = false;
         this.newerNode.active = true;
 
@@ -104,7 +108,7 @@ cc.Class({
 
 
 
-        let info = {baseType:TreasureBigType.TON,type:0,reward_num:2,box_level:2, newGuideStep:1};
+        let info = {baseType:TreasureBigType.TON,type:0,reward_num:1,box_level:2, newGuideStep:1};
         let treaInfo = new TreasureInfo();
         treaInfo.init(info);
 
@@ -207,6 +211,9 @@ cc.Class({
 
     doToturialJump() {
         this.currentStep++;
+        if(this.currentStep == 1) {
+            GameTool.sendPointToServer("Guide_jump1");
+        }
         let jumpPosition = this.jumpPostion[this.currentStep];
         let jumpTo = cc.jumpTo(0.4,jumpPosition.x,jumpPosition.y, 200, 1);
         let angle = this.currentStep == 1 ? -360 : 360;
@@ -218,6 +225,7 @@ cc.Class({
                 let treatureComponent = this.treasure.getComponent("Treasure");
                 treatureComponent.openBox(this.treasure.parent);
                 gUICtrl.openUI(gUIIDs.FINISH_TOTURIAL_TIP);
+                GameTool.sendPointToServer("Guide_over");
             } 
          }).start();
         this.theHeroNode.runAction(jumpTo)
@@ -281,24 +289,29 @@ cc.Class({
                     
                     */
     shouldStartJump(isWig) {
-        if(isWig) {
-            this.wigDoneCount += 1;
-        } else {
-            this.sceneDone = true;
-        }
 
-        
-        var plus = 0;
-        if(this.sceneDone) {
-            plus = this.SceneValue;
-        }
-        this.theTempIndex = this.wigDoneCount * this.PerValue + plus;
-        this.precent.string = parseInt(this.theTempIndex) + "%";
-        this.touchStart(this.theTempIndex/100, 30);
-
-        if(this.wigDoneCount >= 11 && this.sceneDone) {
-            this.precent.string = "100%";
-            this.doTheJump();
+        if(!this.hasEnter) {
+            if(isWig) {
+                this.wigDoneCount += 1;
+            } else {
+                this.sceneDone = true;
+            }
+    
+            
+            var plus = 0;
+            if(this.sceneDone) {
+                plus = this.SceneValue;
+            }
+            this.theTempIndex = this.wigDoneCount * this.PerValue + plus;
+            this.precent.string = parseInt(this.theTempIndex) + "%";
+            this.touchStart(this.theTempIndex/100, 30);
+    
+            if(this.wigDoneCount >= 11 && this.sceneDone) {
+                this.hasEnter = true;
+                this.precent.string = "100%";
+                this.doTheJump();
+                GameTool.sendPointToServer("Loading_over",true);
+            }
         }
     },
 
@@ -464,7 +477,7 @@ cc.Class({
             case gGSM.LOGIN:
                 {
                     this.tasks();
-                    this.historyRank();
+                    //this.historyRank();
                     this.friend();
                     this.clubRank();
                     this.coinRank();

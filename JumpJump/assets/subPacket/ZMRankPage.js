@@ -39,10 +39,10 @@ var ZMRankPage = cc.Class({
         squadNode: cc.Node,             // 俱乐部的toggle
 
 
-        clubPrefab:cc.Prefab,
+        clubPrefab:cc.Node,
         clubComponent: "RankClubItem",
 
-        PersonalPrefab:cc.Prefab,
+        PersonalPrefab:cc.Node,
         personalComponent: "RankPersonalItem",
 
 
@@ -86,10 +86,7 @@ var ZMRankPage = cc.Class({
         this.squadContent.active = false;
 
         GameTool.copyBottomNode(gUIIDs.UI_RANK_PAGE,this.node.getChildByName("wrapper"));
-        if(window.Telegram){
-            plausible('rank');
-        }
-        
+        GameTool.sendPointToServer("rank");
     },
 
     onDestroy() {
@@ -241,10 +238,7 @@ var ZMRankPage = cc.Class({
     onJoinSquad() {
         telegramUtil.openTelegramLinkByUrl(GameConfig.getInviteRobotUrl());
         telegramUtil.onCloseApp();
-        if(window.Telegram){
-            plausible('createsquad');
-        }
-        
+        GameTool.sendPointToServer("createsquad");
     },
 
     handleCoinRank() {
@@ -267,6 +261,7 @@ var ZMRankPage = cc.Class({
             let nickName = GameData.UsersProxy.getMyNickName();
             let money = GameData.UsersProxy.getMyMoney();
             myHistoryRank.setTopScore(myTopScore);
+            myHistoryRank.setHistoryMoney(myTopScore);
             myHistoryRank.setNickname(nickName);
             myHistoryRank.setMoney(money);
             myHistoryRank.isCoin = true;

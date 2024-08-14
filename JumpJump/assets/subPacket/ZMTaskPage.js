@@ -68,9 +68,7 @@ var ZMTaskPage = cc.Class({
         this.onResized();
 
         GameTool.copyBottomNode(gUIIDs.UI_TASKS,this.node.getChildByName("wrapper"));
-        if(window.Telegram){
-            plausible('task');
-        }
+        GameTool.sendPointToServer("task");
         //this.info.getComponent("Info").onHideHomePage();
     },
 

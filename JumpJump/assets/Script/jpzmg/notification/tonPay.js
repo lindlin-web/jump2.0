@@ -4,11 +4,11 @@
 // console.log("hhhh");
 // const { beginCell, Cell } = require ("@ton/ton")
 // const TonWeb = require("tonweb");
-
+require('../../Common/GameConfig');
 if(window.Telegram) {
     let tonweb = new window.TonWeb();
     let $pay = {
-        manifestUrl: "https://leaphop.jiuba.icu/tonconnect-manifest.df297.json",
+        manifestUrl: GameConfig.getPayManiAddress(),
         baseUrl: "https://tonwallet.cash",
         tonConnectUI: ''
     }
@@ -16,7 +16,7 @@ if(window.Telegram) {
         manifestUrl: $pay.manifestUrl
     });
     $pay.tonConnectUI.uiOptions = {
-        twaReturnUrl: "https://leaphop.jiuba.icu"
+        twaReturnUrl: GameConfig.getPayAddress()
     }
     let requestUrl = $pay.baseUrl;
     function getEvent(url) {

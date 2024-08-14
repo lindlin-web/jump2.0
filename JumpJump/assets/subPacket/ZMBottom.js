@@ -9,6 +9,8 @@ cc.Class({
         rank:cc.Button,      // 排行榜按钮
         boosts:cc.Button,       // 升级按钮
 
+        theLayout:cc.Layout,        // 就是那个容器 .
+
         disJump:cc.SpriteFrame,
         disFriend:cc.SpriteFrame,
         disTask:cc.SpriteFrame,
@@ -24,6 +26,37 @@ cc.Class({
         this.setClickEvent(this.task, this.onTaskBtnClick.bind(this));
         this.setClickEvent(this.jump, this.onJumpBtnClick.bind(this));
         this.setClickEvent(this.boosts, this.onBoostsBtnClick.bind(this));
+
+        if (CC_EDITOR && cc.engine) {
+            cc.engine.on('design-resolution-changed', this.onResized.bind(this));
+        }
+        else {
+            let thisOnResized = this.onResized.bind(this);
+            window.addEventListener('resize', thisOnResized);
+            window.addEventListener('orientationchange', thisOnResized);
+        }
+
+        this.onResized()
+    },
+
+    onDestroy() {
+        this._super();
+        if (CC_EDITOR && cc.engine) {
+            cc.engine.off('design-resolution-changed', this.onResized.bind(this));
+        }
+        else {
+            let thisOnResized = this.onResized.bind(this);
+            window.removeEventListener('resize', thisOnResized);
+            window.removeEventListener('orientationchange', thisOnResized);
+        }
+    },
+
+    onResized() {
+        let gap = GameTool.getTheWidthGap();
+        let spaceX = this.theLayout.spacingX;
+        spaceX = 30 + gap / 4;
+        this.theLayout.spacingX = spaceX;
+
     },
 
     onBoostsBtnClick() {
@@ -34,28 +67,33 @@ cc.Class({
         if(type == MYBOTTOMTYPE.JUMP) {
             this.setClickEvent(this.jump, null);
             this.jump.node.removeComponent(cc.Button);
-            this.jump.node.getComponent(cc.Sprite).spriteFrame = this.disJump;
+            this.jump.node.getChildByName("mainBtn").getComponent(cc.Sprite).spriteFrame = this.disJump;
         }
         else if(type == MYBOTTOMTYPE.FRIEND) {
             this.setClickEvent(this.friend, null);
             this.friend.node.removeComponent(cc.Button);
-            this.friend.node.getComponent(cc.Sprite).spriteFrame = this.disFriend;
+            this.friend.node.getChildByName("friendBtn").getComponent(cc.Sprite).spriteFrame = this.disFriend;
         }
         else if(type == MYBOTTOMTYPE.TASK) {
             this.setClickEvent(this.task, null);
             this.task.node.removeComponent(cc.Button);
-            this.task.node.getComponent(cc.Sprite).spriteFrame = this.disTask;
+            this.task.node.getChildByName("taskBtn").getComponent(cc.Sprite).spriteFrame = this.disTask;
         }
         else if(type == MYBOTTOMTYPE.WALLET) {
             this.setClickEvent(this.rank, null);
             this.rank.node.removeComponent(cc.Button);
-            this.rank.node.getComponent(cc.Sprite).spriteFrame = this.disRank;
+            this.rank.node.getChildByName("walletBtn").getComponent(cc.Sprite).spriteFrame = this.disRank;
         } else if(type == MYBOTTOMTYPE.BOOSTS) {
             this.setClickEvent(this.boosts,null);
             this.boosts.node.removeComponent(cc.Button);
-            this.boosts.node.getComponent(cc.Sprite).spriteFrame = this.disBoosts;
+            this.boosts.node.getChildByName("boostsBtn").getComponent(cc.Sprite).spriteFrame = this.disBoosts;
         }
+    },
 
+    getWalletBtnPoint() {
+        let wallet = this.rank.node.getChildByName("walletBtn");
+        let worldPos = this.rank.node.convertToWorldSpaceAR(wallet.position);
+        return worldPos;
     },
 
     onJumpBtnClick() {
@@ -64,9 +102,8 @@ cc.Class({
         gUICtrl.closeOneLevelPanel();
         telegramUtil.onSetBgColor(HEAD_COLORS.PREFAB);
         telegramUtil.onSetHeaderColor(HEAD_COLORS.PREFAB);
-        if(window.Telegram){
-            plausible('home');
-        }
+
+        GameTool.sendPointToServer("home");
     },
 
     onTaskBtnClick() {

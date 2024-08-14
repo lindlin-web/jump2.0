@@ -83,6 +83,7 @@ var ZMBoostsPage = cc.Class({
                 this.handleClubMemberMes();
                 break;
             case AppNotify.UPGRADE_DONE:
+                GameTool.sendPointToServer("Level_up");
                 this.refresh();
                 break;
 

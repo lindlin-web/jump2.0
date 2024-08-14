@@ -27,10 +27,7 @@ var ZMFriendPage = cc.Class({
             telegramUtil.onSetHeaderColor(HEAD_COLORS.PREFAB);
         }
         GameTool.copyBottomNode(gUIIDs.UI_FRIEND_PAGE,this.node.getChildByName("wrapper"));
-        if(window.Telegram){
-            plausible('friend');
-        }
-        
+        GameTool.sendPointToServer("friend");
     },
 
     onDestroy() {
@@ -51,10 +48,7 @@ var ZMFriendPage = cc.Class({
 
     onShareBtnClick() {
         telegramUtil.onInvite();
-        if(window.Telegram){
-            plausible('invite');
-        }
-        
+        GameTool.sendPointToServer("invite");
     },
 
     onBackBtnClick() {

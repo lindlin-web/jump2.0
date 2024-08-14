@@ -13,7 +13,7 @@ var NewTreasureInfos = [{baseType:TreasureBigType.TON,type:0,reward_num:2,box_le
                     {baseType: TreasureBigType.PT, type:TreasureSecondType.REVIVETICKET,box_level:1, newGuideStep:3}, 
                     {baseType:TreasureBigType.PT, type:TreasureSecondType.TIME,box_level:1, newGuideStep:4}, 
                     {baseType:TreasureBigType.PT, type:TreasureSecondType.GOLD,money:300,box_level:1, newGuideStep:5}, 
-                    {baseType:TreasureBigType.TON,type:0,reward_num:3,box_level:4, newGuideStep:6}];
+                    {baseType:TreasureBigType.TON,type:0,reward_num:5,box_level:4, newGuideStep:6}];
 
 var GameProxy = (function(){
     function GameProxy() {
@@ -321,8 +321,18 @@ var GameProxy = (function(){
         // 在这个地方获取玩家的new_step是多少.  0, 1, 2, 3,4,5, 
         let userStep = GameData.UsersProxy.getMyNewStep();
         userStep = userStep == 0 ? 1 : userStep;
-        if(userStep < 6) {
+        if(userStep <= 1) {
             let indexArray = [2, 6, 11,16,21];
+            let j = 0;
+            for(let i = userStep; i < NewTreasureInfos.length; i++) {
+                let info = NewTreasureInfos[i];
+                let treaInfo = new TreasureInfo();
+                treaInfo.init(info);
+                this.treasuresInfo.set(indexArray[j], treaInfo);
+                j++;
+            }
+        } else if(userStep < 6) {
+            let indexArray = [6, 11,16,21];
             let j = 0;
             for(let i = userStep; i < NewTreasureInfos.length; i++) {
                 let info = NewTreasureInfos[i];
@@ -417,8 +427,27 @@ var GameProxy = (function(){
         userStep = userStep == 0 ? 1 : userStep;
 
         /** 这个地方是对 新手的特殊处理 */
-        if(startIndex == 0 && userStep < 6) {
+        if(startIndex == 0 && userStep <= 1) {
             let indexArray = [2, 6, 11,16,21];
+            let j = 0;
+            for(let i = userStep; i < NewTreasureInfos.length; i++) {
+                let info = NewTreasureInfos[i];
+                let treaInfo = new TreasureInfo();
+                treaInfo.init(info);
+                this.treasuresInfo.set(indexArray[j], treaInfo);
+                j++;
+            }
+            j = j -1;
+            let beginFrom = indexArray[j];
+            startIndex = beginFrom + 1;
+            if(info.length == 0){
+                step = 1;
+            }
+            else {
+                step = Math.floor((endIndex-startIndex) / info.length);
+            }
+        } else if(startIndex == 0 && userStep < 6) {
+            let indexArray = [6, 11,16,21];
             let j = 0;
             for(let i = userStep; i < NewTreasureInfos.length; i++) {
                 let info = NewTreasureInfos[i];

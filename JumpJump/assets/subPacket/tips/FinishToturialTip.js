@@ -29,6 +29,7 @@ var FinishToturialTip = cc.Class({
             if (error) {
                 return;
             }
+            GameTool.sendPointToServer("Guide_to_game");
         }.bind(this));
     },
 

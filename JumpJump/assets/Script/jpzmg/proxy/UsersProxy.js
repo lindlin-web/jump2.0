@@ -31,7 +31,11 @@ var UsersProxy = (function(){
     UsersProxy.prototype.onUserNewStep = function(data) {
         console.log(data, "============data");
         if(data.code == 1) {
-            // this.updateMyInfo(data);
+            let myUserInfo = this.users.get(this.myTgId);
+            if(!myUserInfo || data.code != 1) {
+                return null;
+            }
+            myUserInfo.setNewStep(data.new_step);
         }
     }
 
@@ -142,6 +146,13 @@ var UsersProxy = (function(){
     UsersProxy.prototype.onUserLogin = function(data)  {
         
         let userInfo = this.setUserInfo(data);
+
+        let myStep = userInfo.getNewStep();
+        if(myStep <= 1) {
+            userInfo.setIsNewer(true);
+        } else {
+            userInfo.setIsNewer(false);
+        }
         // 登录的话， 就是"我自己"
         this.myTgId = userInfo.getTgid();
 
@@ -343,6 +354,7 @@ var UsersProxy = (function(){
             return null;
         }
         let newStep = myUserInfo.getNewStep();
+        newStep = parseInt(newStep);
         return newStep;
     }
 

@@ -7,7 +7,7 @@ var RankProxy = (function(){
         this.myTodayRank = 0;
 
 
-        this.rankClubDic;              // 俱乐部的词典
+        this.rankClubDic;             // 俱乐部的词典
         this.mySquadRank = 0;       // 我的俱乐部的排名是几.
 
 

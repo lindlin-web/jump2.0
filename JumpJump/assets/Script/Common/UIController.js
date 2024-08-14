@@ -603,48 +603,49 @@ var gUICtrl = window.gUICtrl = {
         }
 
         let mainHome = cc.director.getScene().getChildByName("Canvas").getComponent("ZMMainHome");
-        if(!mainHome) {
-            return;
-        }
-        let panels = mainHome.getPanelsNode();
-        console.log(panels, "===========panels");
+        
+        
+        if(mainHome) {
+            let panels = mainHome.getPanelsNode();
+            if(panels) {
+                let nameOfPrefab = resurl.substring(resurl.lastIndexOf("/")+1);
 
-        let nameOfPrefab = resurl.substring(resurl.lastIndexOf("/")+1);
-
-        let prefab = panels.getChildByName(nameOfPrefab);
-
-        if (!noLoading) {
-            this.hideLoadingProgress(resurl);
-        }
-        if (prefab == null || prefab == undefined) {
-            if (callback != null && callback != undefined) {
-                callback(null, err);
+                let prefab = panels.getChildByName(nameOfPrefab);
+                prefab.active = true;
+                if (!noLoading) {
+                    this.hideLoadingProgress(resurl);
+                }
+                if (prefab == null || prefab == undefined) {
+                    if (callback != null && callback != undefined) {
+                        callback(null, err);
+                    }
+                    return;
+                }
+                prefabCache[resurl] = prefab
+        
+                if (callback != null && callback != undefined) {
+                    callback(prefab);
+                }
             }
-            return;
+        } else {
+            gFuncs.createPrefab(resurl, function(prefab, err) {
+                if (!noLoading) {
+                    this.hideLoadingProgress(resurl);
+                }
+                if (prefab == null || prefab == undefined) {
+                    if (callback != null && callback != undefined) {
+                        callback(null, err);
+                    }
+                    return;
+                }
+                prefabCache[resurl] = prefab
+
+                if (callback != null && callback != undefined) {
+                    callback(prefab);
+                }
+            }.bind(this));
         }
-        prefabCache[resurl] = prefab
 
-        if (callback != null && callback != undefined) {
-            callback(prefab);
-        }
-
-
-        // gFuncs.createPrefab(resurl, function(prefab, err) {
-        //     if (!noLoading) {
-        //         this.hideLoadingProgress(resurl);
-        //     }
-        //     if (prefab == null || prefab == undefined) {
-        //         if (callback != null && callback != undefined) {
-        //             callback(null, err);
-        //         }
-        //         return;
-        //     }
-        //     prefabCache[resurl] = prefab
-
-        //     if (callback != null && callback != undefined) {
-        //         callback(prefab);
-        //     }
-        // }.bind(this));
     },
 
     getUIByUIID(uiid) {

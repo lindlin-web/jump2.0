@@ -12,6 +12,8 @@ var ZMWalletsPage = cc.Class({
         listView:ListViewCtrl,
         theTip:cc.Node,                 // 提示
         addVal:cc.Label,                // 钱包的地址.
+
+        theGuide:cc.Node,               // 就是那个引导的遮罩.....
     },
     statics: {
         instance: null
@@ -35,7 +37,15 @@ var ZMWalletsPage = cc.Class({
         GameTool.copyBottomNode(gUIIDs.UI_WALLET_PAGE,this.node.getChildByName("wrapper"));
 
         this.isAskingReturnYet = true;
+
+        let isNewer = GameData.UsersProxy.getMyIsNewer();
+        this.theGuide.active = false;
+        if(isNewer) {
+            this.theGuide.active = true;
+        }
     },
+
+    
 
     onEnable() {
         this._super();
@@ -129,8 +139,11 @@ var ZMWalletsPage = cc.Class({
     },
 
     onDisCollect() {
+        gUICtrl.openUI(gUIIDs.UI_WALLET_EXIT_TIP,null,{tip:"Do you want to disconnect wallet",yesFun:this.disconnectCallback});
+    },
+
+    disconnectCallback() {
         GameData.WalletProxy.disConnectWallet();
-        this.refresh();
     },
 
     onConnect(cb) {
@@ -179,7 +192,8 @@ var ZMWalletsPage = cc.Class({
     listNotificationInterests() {
         return [
             AppNotify.UPDATE_WALLET_DONE,
-            AppNotify.WALLET_LOG
+            AppNotify.WALLET_LOG,
+            AppNotify.OnViewClosed,
         ];
     },
 
@@ -191,6 +205,9 @@ var ZMWalletsPage = cc.Class({
                 break;
             case AppNotify.WALLET_LOG:
                 this.onRefresh();
+                break;
+            case AppNotify.OnViewClosed:
+                this.refresh();
                 break;
         }
     },

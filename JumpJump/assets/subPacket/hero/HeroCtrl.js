@@ -12,9 +12,16 @@ var HeroCtrl = cc.Class({
     },
 
     onLoad () {
+        this.jumpDirection = -1;            // -1 左边， 1 右边
+        this.isTooMuch = -1;                  // -1 不够， 1 太远了
         this.heroScore.active = false;
         this.light.active = false;
         this.nodePool = new cc.NodePool();
+
+        this.node.getChildByName("body").active = false;
+        this.node.getChildByName("head").active = false;
+        
+        this.modelBody = this.node.getChildByName("body2").getChildByName("role");
     },
 
     start() {
@@ -51,22 +58,26 @@ var HeroCtrl = cc.Class({
     },
 
     touchStart(deltaTime, boxHeight) {
-        let y = this.node.scaleY - deltaTime / 6;
+        this.node.getChildByName("body").active = true;
+        this.node.getChildByName("head").active = true;
+        this.node.getChildByName("body2").active = false;
+        let y = this.node.getChildByName("body").scaleY - deltaTime / 6;
         // 英雄的压缩效果
-        this.node.setScale(this.node.scaleX, y);
-        if(this.node.scaleY <= 0.8) {
-            this.node.setScale(this.node.scaleX, 0.8);
+        this.node.getChildByName("body").setScale(this.node.getChildByName("body").scaleX, y);
+        if(this.node.getChildByName("body").scaleY <= 0.8) {
+            this.node.getChildByName("body").setScale(this.node.getChildByName("body").scaleX, 0.8);
         }
-        let x = this.node.scaleX + deltaTime / 10;
-        this.node.setScale(x, this.node.scaleY);
-        if(this.node.scaleX >= 1.2) {
-            this.node.setScale(cc.v2(1.2,this.node.scaleY));
+        let x = this.node.getChildByName("body").scaleX + deltaTime / 10;
+        this.node.getChildByName("body").setScale(x, this.node.getChildByName("body").scaleY);
+        if(this.node.getChildByName("body").scaleX >= 1.2) {
+            this.node.getChildByName("body").setScale(cc.v2(1.2,this.node.getChildByName("body").scaleY));
         }
-
         //限制最大压缩比例
-        if(this.node.scaleY>0.8){
-            let pos = this.node.getPosition();
-            this.node.setPosition(cc.v2(pos.x,pos.y-deltaTime/8*boxHeight));
+        if(this.node.getChildByName("body").scaleY>0.8){
+            let pos = this.node.getChildByName("body").getPosition();
+            let pos2 = this.node.getChildByName("head").getPosition();
+            this.node.getChildByName("head").setPosition(cc.v2(pos2.x,pos2.y-deltaTime/5.2*boxHeight));
+            this.node.getChildByName("body").setPosition(cc.v2(pos.x,pos.y-deltaTime/6.3*boxHeight));
          }
 
 
@@ -76,7 +87,12 @@ var HeroCtrl = cc.Class({
     },
 
     touchEnd() {
-        this.node.setScale(1, 1);
+        this.node.getChildByName("body").active = false;
+        this.node.getChildByName("head").active = false;
+        this.node.getChildByName("body2").active = true;
+        this.node.getChildByName("body").setScale(1, 1);
+        this.node.getChildByName("head").setPosition(cc.v2(0,120.492));
+        this.node.getChildByName("body").setPosition(cc.v2(0, 70));
         this.node.getChildByName("ball_group").removeAllChildren();
     },
 
@@ -87,6 +103,7 @@ var HeroCtrl = cc.Class({
         let heroPos =  this.node.getPosition();
         // 归一化
         let nor = jumpPosition.subtract(heroPos).normalize();
+        this.jumpDirection = nor.x < 0 ? -1 : 1;            // -1 左边  1 右边.
         touchTime *= 8;
         // 落点
         let targetPos = cc.v2(heroPos.x + nor.x * touchTime, heroPos.y + nor.y * touchTime);
@@ -100,7 +117,7 @@ var HeroCtrl = cc.Class({
         let jumpStart = cc.tween(this.node).call(()=>{
             this.tail.active = true;
             this.closeCollider();
-            cc.tween(this.node.getChildByName("body")).to(0.4, {angle:angleX < 0 ? 360: -360}).start();
+            cc.tween(this.node.getChildByName("body2")).to(0.4, {angle:angleX < 0 ? 360: -360}).start();
         });
         let jump = cc.tween(this.node).delay(0.4);
         let jumpEnd = cc.tween(this.node).call(()=>{
@@ -124,7 +141,7 @@ var HeroCtrl = cc.Class({
 
     resetAngle() {
         this.node.angle = 0;
-        this.node.getChildByName("body").angle = 0;
+        this.node.getChildByName("body2").angle = 0;
     },
 
     openCollider() {
@@ -162,8 +179,12 @@ var HeroCtrl = cc.Class({
         .start();
     },
 
-    slip(callback) {
-        cc.tween(this.node).by(0.5, {angle:Math.random() > 0.5 ? 30: -30}).call(()=>{
+    slip(callback,slipBox) {
+        let pos = slipBox.getComponent(Box).getJumpPosition();
+        this.isTooMuch = pos.y > this.node.y ? -1 : 1;         // -1 不够  1 足够了
+        let fallDirection = this.jumpDirection < 0 ? -30 : 30;
+        fallDirection = this.isTooMuch < 0 ? fallDirection : (-1* fallDirection);
+        cc.tween(this.node).by(0.5, {angle:fallDirection}).call(()=>{
             callback && callback();
         }).start();
     },

@@ -60,9 +60,7 @@ var ZMClubPage = cc.Class({
     onInviteToJoin() {
         telegramUtil.onInviteToJoinSquad();
         
-        if(window.Telegram){
-            plausible('inviteJoin');
-        }
+        GameTool.sendPointToServer("inviteJoin");
     },
 
     refresh() {
@@ -106,17 +104,13 @@ var ZMClubPage = cc.Class({
     onLeave() {
         //  GameData.ClubProxy.askForLeaveClub(this.tgGid);            // ”我“ 请求离开某个俱乐部
         gUICtrl.openUI(gUIIDs.UI_RANK_EXIT_TIP,null, {tgGid:this.tgGid});
-        if(window.Telegram){
-            plausible('leavesquad');
-        }
+        GameTool.sendPointToServer("leavesquad");
     },
 
     onJoin() {
         //  GameData.ClubProxy.askForJoinClub(this.tgGid);            // ”我“ 请求加入某个俱乐部
         gUICtrl.openUI(gUIIDs.UI_RANK_JOIN_TIP,null, {tgGid:this.tgGid});
-        if(window.Telegram){
-            plausible('joinsquad');
-        }
+        GameTool.sendPointToServer("joinsquad");
     },
 
     onGotoSquad() {
@@ -125,9 +119,7 @@ var ZMClubPage = cc.Class({
         if(address) {
             telegramUtil.openTelegramLinkByUrl(address);
         }
-        if(window.Telegram){
-            plausible('joinsquad');
-        }
+        GameTool.sendPointToServer("joinsquad");
         
     },
 

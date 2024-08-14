@@ -117,9 +117,14 @@ var UserInfo = (function() {
         }
     }
 
+    /** 在登录的时候，判断是否是新手... */
+    UserInfo.prototype.setIsNewer = function(bo) {
+        this.isNewer = bo;
+    }
+
     /** 返回是否是新手 */
     UserInfo.prototype.getIsNewer = function() {
-        return this.isNewer;
+        return true;
     }
 
     UserInfo.prototype.getGold = function() {
@@ -190,7 +195,11 @@ var UserInfo = (function() {
 
     /** 获取我领取了新手的那一个礼包le */
     UserInfo.prototype.getNewStep = function() {
-        return this.newStep;
+        return 0;
+    }
+
+    UserInfo.prototype.setNewStep = function(step) {
+        this.newStep = parseInt(step);
     }
 
     /** 获取历史上的金币 */
@@ -239,8 +248,8 @@ var UserInfo = (function() {
         this.wallet = data.wallet;
         this.walletAddress = data.walletaddress;
 
-        this.isNewer = data.is_new == 1; //是新手， == 2是老手
-        this.newStep = data.new_step;           // 0, 1,2,3,4,5,6.
+        
+        this.newStep = parseInt(data.new_step);           // 0, 1,2,3,4,5,6.
         this.levelDetail = data.level_detail.split(",");
 
         // var giftDetail = {

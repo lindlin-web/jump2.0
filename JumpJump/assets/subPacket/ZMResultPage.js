@@ -118,10 +118,7 @@ cc.Class({
 
     onChallenge() {
         telegramUtil.onChallenge();
-        if(window.Telegram){
-            plausible('challenge');
-        }
-        
+        GameTool.sendPointToServer("challenge");
     },
 
     onRankBtn() {
@@ -131,10 +128,7 @@ cc.Class({
     onCupousBtnClick() {
         gGameCmd.postAction(gGSM.USE_PROPS, {type:1});
         this.doTheFlyingActionCupons();
-        if(window.Telegram){
-            plausible('revive');
-        }
-        
+        GameTool.sendPointToServer("revive");
     },
 
     onReplayBtnClick() {
@@ -144,10 +138,7 @@ cc.Class({
         NotifyMgr.send(AppNotify.StartTheGame);
         this.removeSelf();
         //this.doTheFlyingAction();
-        if(window.Telegram){
-            plausible('again');
-        }
-        
+        GameTool.sendPointToServer("again");
     },
 
     doTheFlyingActionCupons() {

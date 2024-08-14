@@ -1,5 +1,5 @@
 var ZMGameLogic = require('./ZMGameLogic');
-
+var ZMBottom = require('./ZMBottom');
 //uiids.UI_FRIEND_PAGE,uiids.UI_RANK_PAGE,uiids.UI_CLUB_PAGE,uiids.UI_TASKS
 var FUNCFROM = {NET:1, MOVE:2};
 
@@ -110,18 +110,22 @@ cc.Class({
         telegramUtil.onSetBgColor(HEAD_COLORS.PREFAB);
         telegramUtil.onSetHeaderColor(HEAD_COLORS.PREFAB);
         
-        GameTool.copyBottomNode(gUIIDs.UI_HOME,this.node.getChildByName("wrapper").getChildByName("home_page"));
-
-        if(window.Telegram){
-            plausible('home');
-        }
-
+        GameTool.sendPointToServer("home");
         this.reviveNode.active = false;         // 默认复活券，是隐藏的.
         GameData.UsersProxy.askForOffLineBenefit();         // 获得离线收益...
 
         this.createTheRain();
 
         this.thePanelsNode = cc.instantiate(this.theMainPanel);
+
+        GameTool.copyBottomNode(gUIIDs.UI_HOME,this.node.getChildByName("wrapper").getChildByName("home_page"));
+    },
+
+    getWalletPosition() {
+        let bottom = this.node.getChildByName("wrapper").getChildByName("home_page").getChildByName("bottom").getComponent(ZMBottom);
+        let walletWorldPos = bottom.getWalletBtnPoint();
+        let localPos = this.theGuide.parent.convertToNodeSpaceAR(walletWorldPos);
+        this.theGuide.setPosition(localPos);
     },
 
 
@@ -259,6 +263,7 @@ cc.Class({
     onWrapperTouchStart() {
         GameData.GameProxy.setGameState(GameState.StateOfInput);        // 设置成输入 input 的状态..
         let isCanJump = GameData.GameProxy.isCanJump();
+        console.log("home iscanjump==", isCanJump);
         if(isCanJump) {
             GameData.GameProxy.startHoldBreath();
             this.gameLogic.doTheHoldBreathAction();
@@ -331,7 +336,8 @@ cc.Class({
             AppNotify.FETCH_REVIVETICKET,
             AppNotify.OFFLINE_BENEFIT,
             AppNotify.ON_TIME_OUT,
-            AppNotify.WALLET_LOG
+            AppNotify.WALLET_LOG,
+            AppNotify.ClubMemberMes
         ];
     },
 
@@ -372,6 +378,7 @@ cc.Class({
                 break;
             case AppNotify.JOIN_GROUP:
             case AppNotify.LEAVE_GROUP:
+            case AppNotify.ClubMemberMes:
                 this.initClubThing();
                 break;
             case AppNotify.FETCH_TIME:
@@ -442,11 +449,7 @@ cc.Class({
         
 
         this.doTheFlyingAction();
-
-        
-        if(window.Telegram){
-            plausible('start');
-        }
+        GameTool.sendPointToServer("start");
     },
 
     doTheFlyingAction() {
@@ -487,13 +490,13 @@ cc.Class({
     },
 
     backToMainPage() {
-
         if(this.isFirstToHome) {
             this.isFirstToHome = false;
             let isNewer = GameData.UsersProxy.getMyIsNewer();
             this.theGuide.active = false;
             if(isNewer) {
                 this.theGuide.active = true;
+                this.getWalletPosition();
             }
         }
         this.homePage.active = true;
@@ -593,6 +596,9 @@ cc.Class({
     },
 
     update (dt) {
+        if(this.theGuide.active == true) {
+            this.getWalletPosition();
+        }
         // this.timeInterval += dt;
         // if(this.timeInterval >= 15) {
         //     this.timeInterval -= 15;

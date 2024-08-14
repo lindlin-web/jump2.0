@@ -81,6 +81,10 @@ var RankPersonalInfo = (function() {
         return this.historyMoney;
     }
 
+    RankPersonalInfo.prototype.setHistoryMoney = function(val) {
+        this.historyMoney = val;
+    }
+
     /** 获得头像图片 */
     RankPersonalInfo.prototype.getAvatarUrl = function() {
         return this.avatarUrl;

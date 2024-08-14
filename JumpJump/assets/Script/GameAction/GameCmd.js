@@ -120,12 +120,12 @@ var gGameCmd = window.gGameCmd = {
                     if (mLastPhpAction["errorCallback"]) {
                         mLastPhpAction["errorCallback"](-9999, GameTool.getErrorString("local_4"));
                     } else {
-                        if (gUICtrl.getUIByUIID(gUIIDs.UI_MAINSCENE)) {
-                            if (gUICtrl.getUIByUIID(gUIIDs.UI_MAINSCENE).isShowGuildAlert) {
-                                gUICtrl.closeUIWithUIID(gUIIDs.UI_Alert);
-                                gUICtrl.getUIByUIID(gUIIDs.UI_MAINSCENE).isShowGuildAlert = false;
-                            }
-                        }
+                        // if (gUICtrl.getUIByUIID(gUIIDs.UI_MAINSCENE)) {
+                        //     if (gUICtrl.getUIByUIID(gUIIDs.UI_MAINSCENE).isShowGuildAlert) {
+                        //         gUICtrl.closeUIWithUIID(gUIIDs.UI_Alert);
+                        //         gUICtrl.getUIByUIID(gUIIDs.UI_MAINSCENE).isShowGuildAlert = false;
+                        //     }
+                        // }
                         //弹出错误提示
                         // if (!this.isShowAlert) {
                         //     this.isShowAlert = true;
@@ -134,6 +134,9 @@ var gGameCmd = window.gGameCmd = {
                         //         this.isShowAlert = false;
                         //     }.bind(this));
                         // }
+                        if(mLastPhpAction["gsmKey"] == gGSM.GAME_OVER && mLastPhpAction["params"].type == 2) {
+                            gUICtrl.openUI(gUIIDs.UI_WALLET_EXIT_TIP,null, {tip:"network error",showNo:false});
+                        }
                     }
                 }
             }

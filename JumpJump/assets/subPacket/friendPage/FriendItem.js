@@ -39,7 +39,7 @@ cc.Class({
         this.info = info;
         this.playName.string = GameTool.convertUserName15(info.getNickName());
         this.score.string = info.getHistoryMaxMoney() + "";
-        this.address.string = GameTool.converWalletAddress(info.getWallet());
+        //this.address.string = GameTool.converWalletAddress(info.getWallet());
         // 获得头像的url 
         let tgid = info.getTgid();
         let url = gFuncs.getAvatarUrlByTgid(tgid);

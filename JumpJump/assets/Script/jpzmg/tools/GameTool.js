@@ -1,3 +1,4 @@
+
 var DebugLevel = window.DebugLevel = {
     Log: 1,
     Info: 2,
@@ -224,10 +225,27 @@ var GameTool = window.GameTool = {
         // let wrapper = cc.director.getScene().getChildByName("Canvas").getChildByName("wrapper");
         // let homePage = wrapper.getChildByName("home_page");
         // let bottom = homePage.getChildByName("bottom");
-        gFuncs.createPrefab("ui/jpzmg/bottom",function(prefab, err){
-            let bottom = cc.instantiate(prefab);
-            GameTool.addBottomToWrapper(uiid,bottom,theParent);
-        })
+
+        let mainHome = cc.director.getScene().getChildByName("Canvas").getComponent("ZMMainHome");
+        if(!mainHome) {
+            return;
+        }
+
+        let resurl = "ui/jpzmg/bottom";
+        let panels = mainHome.getPanelsNode();
+        console.log(panels, "===========panels");
+
+        let nameOfPrefab = resurl.substring(resurl.lastIndexOf("/")+1);
+
+        let prefab = panels.getChildByName(nameOfPrefab);
+        prefab.active = true;
+        let bottom = cc.instantiate(prefab);
+        GameTool.addBottomToWrapper(uiid,bottom,theParent);
+
+        // gFuncs.createPrefab("ui/jpzmg/bottom",function(prefab, err){
+        //     let bottom = cc.instantiate(prefab);
+        //     GameTool.addBottomToWrapper(uiid,bottom,theParent);
+        // })
     },
 
     addBottomToWrapper(uiid,bottom,theParent) {
@@ -575,6 +593,49 @@ var GameTool = window.GameTool = {
         });
     },
 
+    /** 发送埋伏点，给服务器... */
+    sendPointToServer: function(eventStr,useMobile) {
+        if(window.Telegram){
+            useMobile = !!useMobile;
+            if(useMobile) {
+                let param = {UA:"",Model:""};
+                param.UA = GameTool.getMobileAgent();
+                param.Model = GameTool.getMobileModel();
+                plausible(eventStr,{props: param});
+            }
+            else {
+                plausible(eventStr);
+            }
+        }
+    },
+
+    /** 获得玩家的手机代理 */
+    getMobileAgent:function() {
+        let ua = navigator.userAgent;
+        return ua;
+    },
+
+    /** 获得手机model */
+    getMobileModel:function() {
+        const ua = navigator.userAgent;
+        let model = "Unknown";
+      
+        if (/iP(hone|od|ad)/.test(ua)) {
+          const matches = ua.match(/iP(hone|od|ad);.*?OS\s([\d_]+)/);
+          if (matches) {
+            model = `iPhone ${matches[2].replace(/_/g, '.')}`;
+          }
+        }
+      
+        else if (/Android/.test(ua)) {
+          const matches = ua.match(/Android\s([0-9\.]+);\s([^;]+)/);
+          if (matches) {
+            model = matches[2];
+          }
+        }
+        return model;
+    },
+
     getValueByKeyString: function(data, key) {
         var v = data;
         var propKeys = key.split(".");
@@ -586,4 +647,6 @@ var GameTool = window.GameTool = {
         };
         return v;
     },
+
+
 }
