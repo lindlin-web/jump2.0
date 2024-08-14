@@ -1,6 +1,7 @@
 {
-  "ver": "2.3.5",
+  "ver": "2.3.7",
   "uuid": "b7f82c98-7bdf-4aa9-8ae5-af138ad3c2ce",
+  "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -12,8 +13,9 @@
   "platformSettings": {},
   "subMetas": {
     "boost_chest1": {
-      "ver": "1.0.4",
+      "ver": "1.0.6",
       "uuid": "8bc2b11c-2a6b-4424-8141-fda874d40141",
+      "importer": "sprite-frame",
       "rawTextureUuid": "b7f82c98-7bdf-4aa9-8ae5-af138ad3c2ce",
       "trimType": "auto",
       "trimThreshold": 1,

@@ -14,6 +14,8 @@ var ZMWalletsPage = cc.Class({
         addVal:cc.Label,                // 钱包的地址.
 
         theGuide:cc.Node,               // 就是那个引导的遮罩.....
+        theGuide2:cc.Node,              // 新手引导的第二步......
+        theGuide3:cc.Node,              // 引导到jump 面板.......
     },
     statics: {
         instance: null
@@ -39,10 +41,14 @@ var ZMWalletsPage = cc.Class({
         this.isAskingReturnYet = true;
 
         let isNewer = GameData.UsersProxy.getMyIsNewer();
+        let walletStep = GameData.GameProxy.getWalletStep();
         this.theGuide.active = false;
-        if(isNewer) {
+        
+        this.theGuide2.active = false;
+        if(isNewer && walletStep == WALLETSTEP.WALLETBTN) {
             this.theGuide.active = true;
         }
+        this.theGuide3.active = false;
     },
 
     
@@ -147,6 +153,13 @@ var ZMWalletsPage = cc.Class({
     },
 
     onConnect(cb) {
+        this.theGuide.active = false;
+        let walletStep = GameData.GameProxy.getWalletStep();
+        let isNewer = GameData.UsersProxy.getMyIsNewer();
+        if(isNewer && walletStep == WALLETSTEP.WALLETBTN) {
+            GameData.GameProxy.addWalletStep();             // 增进一步...
+            this.theGuide2.active = true;
+        }
         if(true) {
             if(window.Telegram) {
                 window.TonPay.connect((address)=>{
@@ -156,7 +169,28 @@ var ZMWalletsPage = cc.Class({
                 });
             }
         }
+        
     },
+
+    onGuide2Click() {
+        this.theGuide2.active = false;
+        let walletStep = GameData.GameProxy.getWalletStep();
+        let isNewer = GameData.UsersProxy.getMyIsNewer();
+        if(isNewer && walletStep == WALLETSTEP.WALLETCONNECT) {
+            GameData.GameProxy.addWalletStep();             // 增进一步...
+            this.theGuide3.active = true;
+            this.adjustGuide3();
+        }
+    },
+
+    /** 调整guide的 位置... */
+    adjustGuide3() {
+        let bottom = this.node.getChildByName("wrapper").getChildByName("bottom").getComponent('ZMBottom');
+        let walletWorldPos = bottom.getJumpBtnPoint();
+        let localPos = this.theGuide3.parent.convertToNodeSpaceAR(walletWorldPos);
+        this.theGuide3.setPosition(localPos);
+    },
+
 
     start() {
 

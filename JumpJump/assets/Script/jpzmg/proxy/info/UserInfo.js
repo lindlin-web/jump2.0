@@ -124,7 +124,7 @@ var UserInfo = (function() {
 
     /** 返回是否是新手 */
     UserInfo.prototype.getIsNewer = function() {
-        return true;
+        return this.isNewer;
     }
 
     UserInfo.prototype.getGold = function() {
@@ -195,7 +195,7 @@ var UserInfo = (function() {
 
     /** 获取我领取了新手的那一个礼包le */
     UserInfo.prototype.getNewStep = function() {
-        return 0;
+        return this.newStep;
     }
 
     UserInfo.prototype.setNewStep = function(step) {
@@ -247,7 +247,6 @@ var UserInfo = (function() {
         this.userName = data.username;
         this.wallet = data.wallet;
         this.walletAddress = data.walletaddress;
-
         
         this.newStep = parseInt(data.new_step);           // 0, 1,2,3,4,5,6.
         this.levelDetail = data.level_detail.split(",");

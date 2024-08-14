@@ -7,6 +7,8 @@ var GameState = { StateOfInit:1, StateOfJump:2,StateOfWatch:4, StateOfSuccess:8,
 window.GameState = GameState;
 
 
+var WALLETSTEP = {INIT:0, WALLETBTN:1, WALLETCONNECT:2, WALLETTIP:3, WALLETJUMP:4, WALLETSTART:5};
+window.WALLETSTEP = WALLETSTEP;
 // 新人的 宝箱的 信息...
 var NewTreasureInfos = [{baseType:TreasureBigType.TON,type:0,reward_num:2,box_level:2, newGuideStep:1}, 
                     {baseType:TreasureBigType.TON,type:0,reward_num:2,box_level:3, newGuideStep:2}, 
@@ -58,6 +60,19 @@ var GameProxy = (function(){
         this.adClickAddress = "";                       // 广告的跳转地址是多少....
 
         this.isThisRoundFetchTheTicket = false;         // 这个单局里面是否已经有了 复活券了。
+
+
+        this.walletGuideStep = 0;            // 钱包引导，到了第几步了。 1 . 点击钱包 ，  2 . 点击钱包的connect , 3. 点击 钱包 tip 知道了。  4.  点击jump ..  5. 点击 start jump 按钮
+    }
+
+    GameProxy.prototype.addWalletStep = function() {
+        this.walletGuideStep++;
+
+        GameTool.sendPointToServer("WALLET_" + this.walletGuideStep);
+    }
+
+    GameProxy.prototype.getWalletStep = function() {
+        return this.walletGuideStep;
     }
 
     GameProxy.prototype.onStartTheGame = function() {
@@ -614,13 +629,13 @@ var GameProxy = (function(){
 
     /** 游戏结束 */
     GameProxy.prototype.overTheResult = function() {
-        localStorage.setItem("lastScore", this.totalScore);
-        localStorage.setItem("lastMoney", this.totalMoney);
+        //localStorage.setItem("lastScore", this.totalScore);
+        //localStorage.setItem("lastMoney", this.totalMoney);
     }
     /** 仅仅就是上报gameover数据 */
     GameProxy.prototype.justReportTheResult = function() {
-        let totalScore = (parseInt)(localStorage.getItem("lastScore"));
-        let totalMoney = (parseInt)(localStorage.getItem("lastMoney"));
+        let totalScore = this.totalScore;
+        let totalMoney = this.totalMoney;
         if(totalScore >= 0 && totalMoney >= 0) {
             let params = this.getParams(totalScore, totalMoney);
             params.type = 2;            // 1: 未结束 , 2: 完全结束
@@ -631,8 +646,6 @@ var GameProxy = (function(){
             console.log(params, "===========params");
             gGameCmd.postAction(gGSM.GAME_OVER, params);
             GameData.UsersProxy.RegisterGameOver();
-            localStorage.setItem("lastScore", -1);
-            localStorage.setItem("lastMoney", -1);
         }
     }
 

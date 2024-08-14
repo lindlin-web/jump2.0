@@ -1002,7 +1002,6 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_useOriginalSize": false,
     "_string": "100%",
     "_N$string": "100%",
     "_fontSize": 62,
@@ -2603,7 +2602,6 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_useOriginalSize": false,
     "_string": "+100",
     "_N$string": "+100",
     "_fontSize": 30,
@@ -3425,7 +3423,6 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_useOriginalSize": false,
     "_string": "Hold the screen to charge up",
     "_N$string": "Hold the screen to charge up",
     "_fontSize": 30,
@@ -3948,6 +3945,12 @@
     },
     "treasure": {
       "__id__": 40
+    },
+    "thePrefab": {
+      "__uuid__": "0e813e5e-9939-4c98-af07-807e3f37f30d"
+    },
+    "process": {
+      "__uuid__": "09f6bbb0-069d-420c-8d46-9d335734d800"
     },
     "_id": "8fvE1L7oFGK4RdDxqdF8Pt"
   }

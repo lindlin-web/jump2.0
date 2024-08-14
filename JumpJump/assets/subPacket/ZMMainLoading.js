@@ -34,7 +34,9 @@ cc.Class({
         tag:cc.Node,                        // 就是那个三角形...
 
         treasure:cc.Node,                   // 就是那个宝贝...
+        thePrefab:cc.Prefab,            ///
 
+        process:cc.Prefab,
     },
 
     onLoad() {
@@ -68,6 +70,8 @@ cc.Class({
 
         this.SceneValue = Math.floor(Math.random() * 8) + 4;
         this.PerValue = Math.floor(100 - this.SceneValue) / 11;
+
+        this.canJump = true;
     },
 
     onLoginFinished() {
@@ -210,6 +214,12 @@ cc.Class({
     },
 
     doToturialJump() {
+        if(!this.canJump) {
+            return;
+        }
+        if(this.canJump) {
+            this.canJump = false;
+        }
         this.currentStep++;
         if(this.currentStep == 1) {
             GameTool.sendPointToServer("Guide_jump1");
@@ -219,6 +229,7 @@ cc.Class({
         let angle = this.currentStep == 1 ? -360 : 360;
         var self = this;
         cc.tween(this.theHeroNode).to(0.4, {angle:angle}).call(()=>{
+            this.canJump = true;
             self.resetToturial();
             GameData.SoundProxy.playScore(1);
             if(self.currentStep == 3) {

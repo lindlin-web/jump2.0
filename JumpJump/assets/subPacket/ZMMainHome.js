@@ -60,6 +60,9 @@ cc.Class({
         theDrop:cc.Node,                // 雨滴...
 
         theMainPanel:cc.Prefab,     // 所有的预制体都在一个地方....
+
+
+        theStartHand:cc.Node,           // 新手引导的 那个手势....
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -68,7 +71,6 @@ cc.Class({
         // 关闭多点触摸
         this.thePool = [];
         this.theComboTip.active = false;
-        this.isFirstToHome = true;      // 假设是第一次来 主页的.
         this.isGiftPanelOpened = false;
         cc.macro.ENABLE_MULTI_TOUCH = false;
         this.timeInterval = 0;
@@ -119,6 +121,8 @@ cc.Class({
         this.thePanelsNode = cc.instantiate(this.theMainPanel);
 
         GameTool.copyBottomNode(gUIIDs.UI_HOME,this.node.getChildByName("wrapper").getChildByName("home_page"));
+
+        this.theStartHand.active = false;
     },
 
     getWalletPosition() {
@@ -419,7 +423,13 @@ cc.Class({
 
     /** 确认，是否有排行榜的奖励 */
     checkRankPrize() {
-        GameData.GameProxy.askForRankPrize();
+        //GameData.GameProxy.askForRankPrize();         // 因为没有了排行榜奖励了。所以这个地方，可以被屏蔽掉了。
+        let walletStep = GameData.GameProxy.getWalletStep();
+        let isNewer = GameData.UsersProxy.getMyIsNewer();
+        if(isNewer && walletStep == WALLETSTEP.WALLETJUMP) {
+            // 如果是新手，并且，新手引导到了 点击jump这个按钮.
+            this.theStartHand.active = true;
+        }
     },
 
     continueGame() {
@@ -446,10 +456,16 @@ cc.Class({
         this.reStartTheGame();
         this.fromType = 0;
         GameData.GameProxy.startTheGame();
-        
-
         this.doTheFlyingAction();
         GameTool.sendPointToServer("start");
+
+        let walletStep = GameData.GameProxy.getWalletStep();
+        let isNewer = GameData.UsersProxy.getMyIsNewer();
+        if(isNewer && walletStep == WALLETSTEP.WALLETJUMP) {
+            // 如果是新手，并且，新手引导到了 点击jump这个按钮.
+            this.theStartHand.active = false;
+            GameData.GameProxy.addWalletStep(); 
+        }
     },
 
     doTheFlyingAction() {
@@ -490,8 +506,8 @@ cc.Class({
     },
 
     backToMainPage() {
-        if(this.isFirstToHome) {
-            this.isFirstToHome = false;
+        let walletStep = GameData.GameProxy.getWalletStep();
+        if(walletStep == WALLETSTEP.INIT) {
             let isNewer = GameData.UsersProxy.getMyIsNewer();
             this.theGuide.active = false;
             if(isNewer) {

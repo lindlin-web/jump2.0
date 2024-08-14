@@ -51,5 +51,8 @@
     "live": {
       "enable": false
     }
-  }
+  },
+  "migrate-history": [
+    "cloud-function"
+  ]
 }

@@ -1,6 +1,7 @@
 {
-  "ver": "2.3.5",
+  "ver": "2.3.7",
   "uuid": "156143f7-4313-4eef-aef8-924ec36a31c0",
+  "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -12,8 +13,9 @@
   "platformSettings": {},
   "subMetas": {
     "Friends_3": {
-      "ver": "1.0.4",
+      "ver": "1.0.6",
       "uuid": "7df86eb1-301c-4be0-9e16-e01142b76b59",
+      "importer": "sprite-frame",
       "rawTextureUuid": "156143f7-4313-4eef-aef8-924ec36a31c0",
       "trimType": "auto",
       "trimThreshold": 1,

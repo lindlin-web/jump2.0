@@ -1,6 +1,7 @@
 {
-  "ver": "2.3.5",
+  "ver": "2.3.7",
   "uuid": "02bf3de6-6739-4a73-8b0f-e5e59d6e17ac",
+  "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -12,8 +13,9 @@
   "platformSettings": {},
   "subMetas": {
     "wallet2": {
-      "ver": "1.0.4",
+      "ver": "1.0.6",
       "uuid": "ffc94bde-1f7b-41ff-b335-8ed05ac612b6",
+      "importer": "sprite-frame",
       "rawTextureUuid": "02bf3de6-6739-4a73-8b0f-e5e59d6e17ac",
       "trimType": "auto",
       "trimThreshold": 1,

@@ -53,10 +53,11 @@ cc.Class({
 
     onResized() {
         let gap = GameTool.getTheWidthGap();
-        let spaceX = this.theLayout.spacingX;
-        spaceX = 30 + gap / 4;
-        this.theLayout.spacingX = spaceX;
-
+        if(this.node && this.node.isValid) {
+            let spaceX = this.theLayout.spacingX;
+            spaceX = 30 + gap / 4;
+            this.theLayout.spacingX = spaceX;
+        }
     },
 
     onBoostsBtnClick() {
@@ -96,7 +97,19 @@ cc.Class({
         return worldPos;
     },
 
+    getJumpBtnPoint() {
+        let wallet = this.jump.node.getChildByName("mainBtn");
+        let worldPos = this.jump.node.convertToWorldSpaceAR(wallet.position);
+        return worldPos;
+    },
+
     onJumpBtnClick() {
+
+        let walletStep = GameData.GameProxy.getWalletStep();
+        let isNewer = GameData.UsersProxy.getMyIsNewer();
+        if(isNewer && walletStep == WALLETSTEP.WALLETTIP) {
+            GameData.GameProxy.addWalletStep();             // 增进一步...
+        }
         let telegramUtil = require('../Script/Common/TelegramUtils');
         telegramUtil.onHideBackBtn();
         gUICtrl.closeOneLevelPanel();
@@ -111,6 +124,12 @@ cc.Class({
     },
 
     onRankClick() {
+        let walletStep = GameData.GameProxy.getWalletStep();
+        let isNewer = GameData.UsersProxy.getMyIsNewer();
+        if(isNewer && walletStep == WALLETSTEP.INIT) {
+            GameData.GameProxy.addWalletStep();
+        }
+
         gUICtrl.openUI(gUIIDs.UI_WALLET_PAGE);
     },
 
