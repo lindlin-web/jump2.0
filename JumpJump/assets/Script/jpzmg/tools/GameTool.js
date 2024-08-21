@@ -365,7 +365,17 @@ var GameTool = window.GameTool = {
         let happytimePlus = isGoldTime ? timeBenifit : 1.0;                 // 
         
         let result = score * baseCoin * (1 + plusAdd/100 + teamAdd) * happytimePlus;
-        return result;
+        // 这个地方，还需要跟我的每日的上线，做一下比较，如果超过了每日上限。就不可以增加....
+        let roundAlreadyEarnMoney = GameData.GameProxy.getGoldOfTodayPlusThisRound();
+        let myDailyLimitLevel = GameData.UsersProxy.getMyUpgradeLevel(5);         // 获得happyTime的level是多少.
+        let myLimit = GameData.UpgradeProxy.getDailyLimitByLevel(myDailyLimitLevel);
+        let gap = myLimit - roundAlreadyEarnMoney;
+        if(gap > result) {
+            return result;
+        } else {
+            gap = gap < 0 ? 0 : gap;
+            return gap;
+        }
     },
 
     /** 转化钱包的地址 */

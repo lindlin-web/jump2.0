@@ -9,7 +9,7 @@ let TEST_PLATFORM = {
 	server:"https://jump.wxtest.vip/api",//"https://ikvmoneysocial.buzz/api",
 	inviteUrl: "https://t.me/jumpdevbot?start=team",			// 这个是跟 组队有关的接口，需要问服务器要这个数据
 	payAddress:"https://leaphop.jiuba.icu",
-	payManiAddress:"https://leaphop.jiuba.icu/tonconnect-manifest.df297.json"
+	payManiAddress:"https://leaphop.jiuba.icu/tonconnect-manifest.json"
 }
 //https://t.me/LeapCoinBot
 // 这个是正式服的配置
@@ -18,7 +18,7 @@ let REAL_PLATFORM = {
 	server: "https://api.leapcoin.cc/api",
 	inviteUrl: "https://t.me/LeapCoinBot?start=team",
 	payAddress:"https://webapp.leapcoin.cc",
-	payManiAddress:"https://webapp.leapcoin.cc/tonconnect-manifest.df297.json"
+	payManiAddress:"https://webapp.leapcoin.cc/tonconnect-manifest.json"
 }
 
 // 这个是本地的配置...
@@ -27,7 +27,7 @@ let LOCAL_PLATFORM = {
 	server:"http://192.168.5.11:8789/api",
 	inviteUrl: "https://t.me/cccccccscss_bot?start=team",
 	payAddress:"https://leaphop.jiuba.icu",
-	payManiAddress:"https://leaphop.jiuba.icu/tonconnect-manifest.df297.json"
+	payManiAddress:"https://leaphop.jiuba.icu/tonconnect-manifest.json"
 }
 
 var finalSetting = REAL_PLATFORM;							/////xxxxxxxxxxxxxxxxxxxxxxxxxx 在这个地方进行配置...

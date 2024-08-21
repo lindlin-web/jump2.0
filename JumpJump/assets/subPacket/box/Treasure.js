@@ -90,9 +90,26 @@ cc.Class({
         }
         if(bigType == TreasureBigType.PT) {
             if(secondType == TreasureSecondType.GOLD) {
-                GameData.GameProxy.addMoneyToTotal(this.myMoney);
-                GameData.GameProxy.addMoneyToBox(this.myMoney);
-                GameData.UsersProxy.addGoldToMe(this.myMoney);
+
+                let roundAlreadyEarnMoney = GameData.GameProxy.getGoldOfTodayPlusThisRound();
+                let myDailyLimitLevel = GameData.UsersProxy.getMyUpgradeLevel(5);         // 获得happyTime的level是多少.
+                let myLimit = GameData.UpgradeProxy.getDailyLimitByLevel(myDailyLimitLevel);
+                let gap = myLimit - roundAlreadyEarnMoney;
+                if(gap > this.myMoney) {
+
+                    GameData.GameProxy.addMoneyToTotal(this.myMoney);
+                    GameData.GameProxy.addMoneyToBox(this.myMoney);
+                    GameData.UsersProxy.addGoldToMe(this.myMoney);
+                    let showMoney = parseInt(this.myMoney);
+                    this.theValue.string = "+" + showMoney;
+                } else {
+                    gap = gap < 0 ? 0 : gap;
+                    GameData.GameProxy.addMoneyToTotal(gap);
+                    GameData.GameProxy.addMoneyToBox(gap);
+                    GameData.UsersProxy.addGoldToMe(gap);
+                    gap = parseInt(gap);
+                    this.theValue.string = "+" + gap;
+                }
             }
             else if(secondType == TreasureSecondType.TIME) {
                 GameData.GameProxy.fetChTheTime();

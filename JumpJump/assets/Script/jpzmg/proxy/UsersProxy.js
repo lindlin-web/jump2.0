@@ -6,6 +6,7 @@ var UsersProxy = (function(){
         NotifyMgr.on(gGSM.USERNEW_STEP, this.onUserNewStep.bind(this), this);
         NotifyMgr.on(gGSM.OFFLINE_MONEY, this.onOffLineMoney.bind(this), this);
         this.offLineMoney = 0;
+        this.bonusCurrentIndex = 0;             // 获得当前的bonusIndex....
     }
 
     UsersProxy.prototype.getOfflineMoney = function() {
@@ -71,6 +72,20 @@ var UsersProxy = (function(){
         {
             NotifyMgr.send(AppNotify.UserInfoChange);
         }
+    }
+
+    
+
+    /** 获得我的奖励 */
+    UsersProxy.prototype.getMyBonusByIndex = function() {
+        let myUserInfo = this.users.get(this.myTgId);
+        if(!myUserInfo) {
+            return null;
+        }
+        /** 获取我邀请的好友的数量是多少.. */
+        let bonus = myUserInfo.getBonusByIndex(this.bonusCurrentIndex);      //  {ptype:"Money1", score:10}
+        this.bonusCurrentIndex++;
+        return bonus;
     }
 
 

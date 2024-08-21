@@ -63,6 +63,8 @@ var GameProxy = (function(){
 
 
         this.walletGuideStep = -1;            // 钱包引导，到了第几步了。 1 . 点击钱包 ，  2 . 点击钱包的connect , 3. 点击 钱包 tip 知道了。  4.  点击jump ..  5. 点击 start jump 按钮
+
+        this.beginTouchTime = 0;                        // 开始触摸的时间
     }
 
     GameProxy.prototype.addWalletStep = function() {
@@ -72,7 +74,7 @@ var GameProxy = (function(){
             this.walletGuideStep != WALLETSTEP.WALLETCONNECT && 
             this.walletGuideStep != WALLETSTEP.WALLETTIP && 
             this.walletGuideStep != WALLETSTEP.WALLETJUMP) {
-                cc.sys.localStorage.setItem("wallet_"+userName,this.walletGuideStep);
+                cc.sys.localStorage.setItem("wallet____"+userName,this.walletGuideStep);
             }
         GameTool.sendPointToServer("WALLET_" + this.walletGuideStep);
     }
@@ -82,11 +84,10 @@ var GameProxy = (function(){
         if(this.walletGuideStep >= 0) {
             return this.walletGuideStep;
         } else {
-            let walletGuideStep = cc.sys.localStorage.getItem("wallet_"+userName);
+            let walletGuideStep = cc.sys.localStorage.getItem("wallet____"+userName);
             this.walletGuideStep = walletGuideStep ? parseInt(walletGuideStep) : 0;
             return this.walletGuideStep;
         }
-        
     }
 
     GameProxy.prototype.onStartTheGame = function() {
@@ -289,6 +290,7 @@ var GameProxy = (function(){
             cc.director.getScheduler().enableForTarget(this._globalScheduleObj);
         }
         this.theCallback = this.onBreath.bind(this)
+        this.beginTouchTime = new Date().getTime();
         cc.director.getScheduler().schedule(this.theCallback, this._globalScheduleObj,0, false);
     }
 
@@ -305,7 +307,15 @@ var GameProxy = (function(){
         cc.director.getScheduler().unschedule(this.theCallback, this._globalScheduleObj);
         let breath = this.holdBreath;
         this.holdBreath = 0;
-        return breath;
+        let endTime = new Date().getTime();
+        if(this.beginTouchTime == 0) {
+            return 0;
+        }
+        let gap = endTime - this.beginTouchTime;
+        gap = gap / 1000;
+        gap = Math.floor(gap * 60);
+        this.beginTouchTime = 0;
+        return gap;
     }
 
     GameProxy.prototype.resetGameState = function() {

@@ -26,6 +26,7 @@ cc.Class({
 
     onOkBtn() {
         this.removeSelf();
+        NotifyMgr.send(AppNotify.BONUS_TIP_CLOSE);      // 可以发送一些别的事件.
     },
 
     start() {

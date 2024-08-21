@@ -76,6 +76,7 @@ var ZMWalletsPage = cc.Class({
         if(isConnecting) {
             this.disCollectBtn.node.active = true;
             let address = window.TonPay.getAddress();
+            address = window.TonPay.changeAddress(address);
             this.addVal.string = GameTool.converWalletAddress(address);
             this.connectBtn.node.active = false;
         } else {
@@ -162,6 +163,7 @@ var ZMWalletsPage = cc.Class({
         if(true) {
             if(window.Telegram) {
                 window.TonPay.connect((address)=>{
+                    //address = window.TonPay.changeAddress(address);
                     GameData.WalletProxy.askForCollectWallet(address);
                     this.refresh();
                     cb();

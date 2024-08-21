@@ -104,6 +104,9 @@ cc.Class({
         let benefit = GameData.UpgradeProxy.getDailyLimitByLevel(myDailyLimitLevel);
         let totalToday = GameData.GameProxy.getGoldOfTodayPlusThisRound();
         totalToday = parseInt(totalToday);
+        if(totalToday >= benefit) {
+            this.highestScore.node.color = new cc.Color(255, 0, 0, 255);
+        }
         totalToday = GameTool.convertNumberToString(totalToday);
         this.highestScore.string =totalToday + "/" + benefit;                 //   我的历史最高分
 

@@ -258,6 +258,13 @@ uiCfgs[uiids.UI_WALLET_EXIT_TIP] = {
     js: "WalletExitTip",
 },
 
+uiids.UI_BONUS_TIP = getAutoIncreaseID();
+uiCfgs[uiids.UI_BONUS_TIP] = {
+    order: UIOrder.Dialog,
+    res: "ui/jpzmg/BonusTip",
+    js: "BonusTip",
+},
+
 
 
 

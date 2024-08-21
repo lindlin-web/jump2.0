@@ -267,4 +267,5 @@ var AppNotify = window.AppNotify = {
     UPDATE_WALLET_DONE:"UPDATE_WALLET_DONE",    // 通知服务器钱包地址结束...
     WALLET_LOG:"WALLET_LOG",
     ON_TIME_OUT:"ON_TIME_OUT",                  // 时间结束的时候，出发一个时间.
+    BONUS_TIP_CLOSE:"BONUS_TIP_CLOSE",                    // 
 };

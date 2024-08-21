@@ -67,7 +67,7 @@ var UpgradeTip = cc.Class({
             this.moneyNode.active = false;
 
         } else {
-            this.level += 1;
+            this.level = this.level;
             this.lv.string = "Lv:" + this.level;
             this.icon.spriteFrame = this.frames[this.type-1];
             let conStr = GameData.UpgradeProxy.getContentByType(this.type);
@@ -78,10 +78,10 @@ var UpgradeTip = cc.Class({
             let descStr = GameData.UpgradeProxy.getDescByType(this.type);
             this.effect.string = descStr;
             
-            this.currentEffect.string = "Current Effect:"+GameData.UpgradeProxy.getEffectByTypeAndLevel(this.type, this.level-1);
+            this.currentEffect.string = "Current Effect:"+GameData.UpgradeProxy.getEffectByTypeAndLevel(this.type, this.level);
             this.upgradeBtn.node.active = true;
             this.costNode.active = true;
-            let cost = GameData.UpgradeProxy.getCostByTypeAndLevel(parseInt(this.type),parseInt(this.level))
+            let cost = GameData.UpgradeProxy.getCostByTypeAndLevel(parseInt(this.type),parseInt(this.level+1))
             let myMoney = GameData.UsersProxy.getMyMoney();
             this.constGold.string = cost + "";
             if(myMoney >= cost) {
@@ -106,7 +106,7 @@ var UpgradeTip = cc.Class({
 
     onUpgrade() {
         if(this.canDoUpgrade) {
-            GameData.UpgradeProxy.askForUpgrade(this.type, this.level);
+            GameData.UpgradeProxy.askForUpgrade(this.type, this.level+1);
         }
         else {
             // 这个时候可以给玩家一个提示.....

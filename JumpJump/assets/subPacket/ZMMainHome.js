@@ -72,6 +72,7 @@ cc.Class({
         this.thePool = [];
         this.theComboTip.active = false;
         this.isGiftPanelOpened = false;
+        this.isOffLineBenefitAsked = false;
         cc.macro.ENABLE_MULTI_TOUCH = false;
         this.timeInterval = 0;
         this.originalTheTipX = this.theTip.x;
@@ -114,7 +115,6 @@ cc.Class({
         
         GameTool.sendPointToServer("home");
         this.reviveNode.active = false;         // 默认复活券，是隐藏的.
-        GameData.UsersProxy.askForOffLineBenefit();         // 获得离线收益...
 
         this.createTheRain();
 
@@ -147,19 +147,27 @@ cc.Class({
     },
 
     checkToOpenGiftPanel() {
-        if(!this.isGiftPanelOpened) {
+        let bonus = GameData.UsersProxy.getMyBonusByIndex();
+        if(bonus) {
+            gUICtrl.openUI(gUIIDs.UI_BONUS_TIP,null, bonus);
+        } else if(!this.isGiftPanelOpened){
             let isGiftOk = GameData.UsersProxy.getMyGiftOk();
             if(isGiftOk) {
                 let typeAndnum = GameData.UsersProxy.getMyGiftTypeAndNum();
                 gUICtrl.openUI(gUIIDs.UI_THE_GIFT_TIP, null, typeAndnum);
             }
-
             let isGiftError = GameData.UsersProxy.getMyGiftError();
             if(isGiftError) {
                 let msg = GameData.UsersProxy.getMyGiftErrorMsg();
                 gUICtrl.openUI(gUIIDs.UI_GIFT_TIP, null, {msg:msg});
             }
             this.isGiftPanelOpened = true;
+            if(!isGiftOk && !isGiftError) {
+                NotifyMgr.send(AppNotify.BONUS_TIP_CLOSE);      // 可以发送一些别的事件.
+            }
+        } else if(!this.isOffLineBenefitAsked){
+            this.isOffLineBenefitAsked = true;
+            GameData.UsersProxy.askForOffLineBenefit();         // 获得离线收益...
         }
     },
 
@@ -342,7 +350,8 @@ cc.Class({
             AppNotify.OFFLINE_BENEFIT,
             AppNotify.ON_TIME_OUT,
             AppNotify.WALLET_LOG,
-            AppNotify.ClubMemberMes
+            AppNotify.ClubMemberMes,
+            AppNotify.BONUS_TIP_CLOSE,          // 关闭了 bonustip面板
         ];
     },
 
@@ -401,6 +410,8 @@ cc.Class({
             case AppNotify.WALLET_LOG:
                 this.theGuide.active = false;
                 break;
+            case AppNotify.BONUS_TIP_CLOSE:
+                this.checkToOpenGiftPanel();
         }
     },
 

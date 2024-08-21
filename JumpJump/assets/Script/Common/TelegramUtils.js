@@ -7,15 +7,7 @@ window.HEAD_COLORS = HEAD_COLORS;
 function TelegramUtils() {
     this.inviteText = ["💎 Hey there! Join me in playing LeapHop and earn up to 10,000 $LeapCoin daily just by jumping!\n\n🎁 Plus, invite friends like I'm inviting you, and we both get special airdrop rewards!",
                         "💎 Hey there! Join me in playing LeapHop and earn up to 10,000 $LeapCoin daily just by jumping!\n\n🎁 Plus, invite friends like I'm inviting you, and we both get special airdrop rewards!"];
-    this.challengeText = ["🏆 Challenge accepted! 🏆\n\n💪 This round, I scored {XX} points. Who dares to come and challenge me in a PK?\n\n🚀 If you're afraid of losing, then stop boasting here!",
-        "🏆 Challenge accepted! 🏆\n\n🚀 Hmph! You rookies just love to boast. This round, I got {XX} points, showing you what true strength is!\n\n💪 Pathetic! Stop pretending, come on, let me knock you down in one go!",
-        "🏆 Challenge accepted! 🏆\n\n🕹 You bunch of losers, always hiding and scared of losing, why even play the game!\n\n👑 I scored {XX} points this round, waiting to see who dares to challenge my dominance!",
-        "🏆 Challenge accepted! 🏆\n\n🕹 Looks like you're all just trash talkers. I effortlessly scored {XX} points this round, who dares to challenge me?\n\n👇 If you don't have the guts, then stop pretending here and come out to accept the challenge!",
-        "🏆 Challenge accepted! 🏆\n\n👑 I effortlessly scored {XX} points this round, challenging you to come and try to steal my throne!\n\n🕹 Stop with the talk and come out to accept the challenge!",
-        "🏆 Challenge accepted! 🏆\n\n🚀 Looks like you're all just small fry. I easily surpassed {XX} points this round, who's up for a challenge?\n\n🕹 Stop boasting and come PK me, let's see who the real champion is!",
-        "🏆 Challenge accepted! 🏆\n\n🚀 Don't give me excuses to hide, my score {XX} this round has surpassed all of you!\n\n🕹 If you're afraid of losing, then don't play the game, come out and let me teach you a lesson!",
-        "🏆 Challenge accepted! 🏆\n\n🕹 What qualifications do you losers have to challenge me?\n\n👑 I effortlessly scored {XX} points this round, who dares to try and snatch my champion title?",
-        "🏆 Challenge accepted! 🏆\n\n🚀 Scored {XX} points this round must have made you feel ashamed, right?\n\n🕹 If you want to challenge me, come on!"]    
+    this.challengeText = ["🎁 I only leaped {XXX} steps and earned {XXXXXX} $LeapCoin. I'm about to cash out!\n\n💰 Come challenge me and easily earn more rewards. Cash out your earnings and make even more $Ton!"]    
 
     this.joinTeamtr="⬆️ Follow link above to join my squad in LeapHop⬆️\n💰Let's earn $LeapCoin together! By teaming up, we can climb the \nrankings and get special airdrop rewards.";
 }
@@ -108,9 +100,8 @@ TelegramUtils.prototype.onChallenge = function(){
     let myTgId = 0;
     myGid = GameData.UsersProxy.getMyGid();
     myTgId = GameData.UsersProxy.getMyTgid();
-    let random = Math.floor( Math.random() * this.challengeText.length );
-    let ct = this.challengeText[random];
-    let replaceData = {XX:GameData.GameProxy.getTotalScore()};
+    let ct = this.challengeText[0];
+    let replaceData = {XXX:GameData.GameProxy.getTotalScore(), XXXXXX:GameData.GameProxy.getTotalMoney()};
     ct = GameTool.replacePlaceHolders(ct, replaceData);
     let replay = encodeURI(ct);
     let theUrl = "";

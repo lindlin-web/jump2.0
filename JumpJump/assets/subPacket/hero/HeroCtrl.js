@@ -104,7 +104,7 @@ var HeroCtrl = cc.Class({
         // 归一化
         let nor = jumpPosition.subtract(heroPos).normalize();
         this.jumpDirection = nor.x < 0 ? -1 : 1;            // -1 左边  1 右边.
-        touchTime *= 8;
+        touchTime *= 7.7;
         // 落点
         let targetPos = cc.v2(heroPos.x + nor.x * touchTime, heroPos.y + nor.y * touchTime);
         this.jumpByPosition(targetPos,nor.x,callback);
@@ -152,10 +152,10 @@ var HeroCtrl = cc.Class({
         this.node.getChildByName("hero_collider").active = false;
     },
 
-    showScore(score) {
+    showScore(score,earnMoney) {
         this.heroScore.active = true;
         this.heroScore.getChildByName("score").getComponent(cc.Label).string = "";
-        let earnMoney = parseInt(GameTool.getEarnMoneyByStep(score));
+        earnMoney = parseInt(earnMoney);
         this.heroScore.getChildByName("score").getChildByName("layout").getChildByName("realLabel").getComponent(cc.Label).string = "+" + earnMoney + "";
         cc.tween(this.heroScore)
         .to(0.7,{position:cc.v2(this.heroScore.getPosition().x,this.heroScore.getPosition().y+40)})

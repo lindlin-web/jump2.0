@@ -226,7 +226,7 @@ var ZMGameLogic =cc.Class({
                                 this.startMoveInMoneyPanel();
                             }
                             // 英雄身上嫖分
-                            this.heroComponent.showScore(score);
+                            this.heroComponent.showScore(score,earnMoney);
                             // 播放英雄落地小球飞溅特效
                             this.heroComponent.endJumpEffect();
                             

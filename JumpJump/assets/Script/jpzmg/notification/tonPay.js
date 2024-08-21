@@ -109,6 +109,15 @@ if(window.Telegram) {
             }
         );
     }
+
+    $pay.changeAddress = (address) => {
+        if (!address) { return address }
+        const _address = new tonweb.utils.Address(address);
+        const friendly = _address.toString(true, true, false, false)
+        return friendly
+    }
+
+    
     $pay.createPayload = (text) => {
         const body = beginCell()
             .storeUint(0, 32)
@@ -212,7 +221,7 @@ if(window.Telegram) {
         isConnecting: $pay.isConnecting,
         getAddress: $pay.getAddress,
         //decodeBoc: $pay.decodeBoc,
-        //changeAddress: $pay.changeAddress,
+        changeAddress: $pay.changeAddress,
     };
 }
 

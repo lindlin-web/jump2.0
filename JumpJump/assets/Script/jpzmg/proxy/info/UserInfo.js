@@ -202,6 +202,11 @@ var UserInfo = (function() {
         this.newStep = parseInt(step);
     }
 
+    /** 获得，对应的奖励的物品。只是为了做展示的作用. */
+    UserInfo.prototype.getBonusByIndex = function(index) {
+        return this.myBonus[index];// test   [{ptype:"Money1",score:11}, {ptype:"Money2",score:12},{ptype:"Money1",score:13}][index];
+    }
+
     /** 获取历史上的金币 */
     UserInfo.prototype.getHistoryGold = function() {
         return this.historyMoney;
@@ -251,6 +256,33 @@ var UserInfo = (function() {
         this.newStep = parseInt(data.new_step);           // 0, 1,2,3,4,5,6.
         this.levelDetail = data.level_detail.split(",");
 
+        // data.bonus =  [
+        //     {
+        //     "content": "",
+        //     "type": 2, //活动类型
+        //     "score": 10, //奖励数量
+        //     "ptype": "Money2" //奖励类型Money2=金币，Props1=体力，Props2=复活券
+        //     },
+        //     {
+        //     "content": "",
+        //     "type": 1, //活动类型
+        //     "score": 10, //奖励数量
+        //     "ptype": "Money1" //奖励类型Money2=金币，Props1=体力，Props2=复活券
+        //     }
+        //     ];
+
+        let bonus = data.bonus;
+        let afterBonus = [];
+        if(bonus && bonus.length > 0) {
+            for(let i = 0; i < bonus.length; i++) {
+                let aa = {score:0, ptype:""};
+                aa.score = bonus[i].score;
+                aa.ptype = bonus[i].ptype;
+                afterBonus.push(aa);
+            }
+        }
+        this.myBonus = afterBonus;
+
         // var giftDetail = {
         //     "id": 50,
         //     "ative_code": "ative04",
@@ -270,8 +302,6 @@ var UserInfo = (function() {
 
         this.isGiftOk = data.giftDetail && data.giftDetail.code == 1;           // 有礼包码。却礼包码未1
         if(this.isGiftOk) {
-            this.money = data.giftDetail.money;
-            this.coupons = data.giftDetail.coupons;
             this.giftType = data.giftDetail.type;
             this.giftNum = data.giftDetail.reward_num;
         }
@@ -279,8 +309,6 @@ var UserInfo = (function() {
         if(this.isGiftError) {
             this.giftErrorMsg = data.giftDetail.msg;
         }
-
-        
     };
 
     /** 是否有需要弹框 */
